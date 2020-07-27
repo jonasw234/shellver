@@ -28,7 +28,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 - Upgraded to Python 3
 - Automatically spawn listener for msfvenom payloads
 - Use [msfpc](https://github.com/g0tmi1k/msfpc) instead of msfvenom for easier reuse
-- Color coding for different OS
+- Color coding for each different OS shell
 - Reordered payloads a bit (at the beginning are only Linux payloads)
 - No longer use Google DNS to find out LAN IP
 - Remove `requests` dependency
@@ -47,6 +47,8 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/all.png" >
 
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/msfpc.png" >
+
+(asks for `sudo` password because euid is not 0 and port is < 1024)
 
 From https://github.com/swisskyrepo
 
