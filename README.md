@@ -155,9 +155,9 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-⬚ `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet  
 ⬚ Sanity check for user inputs and ask for corrections  
-⬚ Make it possible to use non-default network interfaces when you have more than one
+⬚ Make it possible to use non-default network interfaces when you have more than one  
+☒ `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet (done, but code needs refactoring)
 
 # Thanks to
 * [The original shellver](https://github.com/0xR0/shellver)
