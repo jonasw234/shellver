@@ -23,6 +23,7 @@ def ask_listener():
     print(f'{choice(color)}For LAN enter 1: {lan}')
     if wan:
         print(f'{choice(color)}For WAN enter 2: {wan}')
+    print('Enter a custom IP address if none of the above are correct for you.')
     while True:
         cw = input('Which one do you want, LAN or WAN?: ')
         if cw == '1':
@@ -31,6 +32,12 @@ def ask_listener():
         elif cw == '2' and wan:
             ipp = wan
             break
+        try:
+            socket.inet_aton(cw)
+            ipp = cw
+            break
+        except socket.error:
+            pass
         print('Invalid input.')
     while True:
         port = input("Select listening port: ")
@@ -303,9 +310,9 @@ def main(arg):
         shell()
     elif args.use == 'msf':
         print(choice(color) + """
-                    ______________________________________________________
+                     _____________________________________________________
 
-                                Creating Metasploit Payloads
+                                 Creating Metasploit Payloads
          ______________________________________________________________________________
         |              |                 |                       |                     |
         | #Binaries    |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
