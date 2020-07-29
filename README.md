@@ -27,7 +27,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 # Changes from the original
 - Upgraded to Python 3
 - Automatically spawn listener for msfvenom payloads
-- Use [msfpc](https://github.com/g0tmi1k/msfpc) instead of msfvenom for easier reuse
+- Use [msfpc](https://github.com/g0tmi1k/msfpc) instead of msfvenom for easier reuse (if functionality exists, otherwise recreates its behavior)
 - Color coding for each different OS shell
 - Reordered payloads a bit (at the beginning are only Linux payloads)
 - No longer use Google DNS to find out LAN IP
@@ -42,7 +42,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/py2.png" >
 
-(like it says you should use my [upgrade-tty](https://github.com/jonasw234/upgrade-tty) to upgrade your TTY!) 
+(like it says you should use my [upgrade-tty](https://github.com/jonasw234/upgrade-tty) to upgrade your TTY for Linux systems!) 
 
 `shellver msf`
 

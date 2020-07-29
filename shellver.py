@@ -42,7 +42,8 @@ def ask_listener():
     while True:
         port = input("Select listening port: ")
         try:
-            int(port)
+            if int(port) < 0 or int(port) > 65535:
+                raise ValueError
             break
         except ValueError:
             print('Invalid input.')
