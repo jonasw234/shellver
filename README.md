@@ -155,7 +155,6 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-⬚ Sanity check for user inputs and ask for corrections  
 ⬚ Make it possible to use non-default network interfaces when you have more than one  
 ⬚ Make it possible to use a completely different IP address if you create the payload on your machine but want to run the listener on a different (Internet exposed) server  
 ☒ `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet (done, but code needs refactoring)
