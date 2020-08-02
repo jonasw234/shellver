@@ -3,6 +3,9 @@ import argparse, sys, os, re, socket, subprocess
 from urllib import request
 from random import choice
 import signal
+import ipaddress
+
+import netifaces
 
 color = ['\033[95m', '\033[96m', '\033[36m', '\033[94m', '\033[92m', '\033[93m', '\033[91m']
 
@@ -13,34 +16,41 @@ def signal_handler(sig, frame):
 
 
 def ask_listener():
-    lan = ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('10.255.255.255', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
+    interfaces = netifaces.interfaces()
+    ip_addrs = []
+    for interface in interfaces:
+        ip_addrs.extend([ip_addr['addr'] for ip_addr in netifaces.ifaddresses(interface)[netifaces.AF_INET] if not ipaddress.ip_address(ip_addr['addr']).is_loopback])
     wan = None
     try:
         wan = request.urlopen('https://api.ipify.org').readline().decode('utf-8')
     except:
         print('Could not automatically determine external IP address.')
         print('Please try again later or input manually!')
-    print(f'{choice(color)}For LAN enter 1: {lan}')
+    print(f'{choice(color)}')
+    for idx, ip_addr in enumerate(ip_addrs, 1):
+        print(f'For LAN enter {idx}: {ip_addr}')
     if wan:
-        print(f'{choice(color)}For WAN enter 2: {wan}')
+        print(f'For WAN enter {idx + 1}: {wan}')
     print('Enter a custom IP address if none of the above are correct for you.')
     while True:
-        cw = input('Which one do you want, LAN or WAN?: ')
-        if cw == '1':
-            ipp = lan
-            break
-        elif cw == '2' and wan:
-            ipp = wan
-            break
         try:
-            socket.inet_aton(cw)
-            ipp = cw
-            break
-        except socket.error:
-            pass
+            cw = input('Which one do you want?: ')
+            if int(cw) >= 1 and int(cw) <= idx:
+                ipp = ip_addrs[int(cw) - 1]
+                break
+            elif int(cw) == idx + 1 and wan:
+                ipp = wan
+                break
+        except ValueError:
+            try:
+                socket.inet_aton(cw)
+                ipp = cw
+                break
+            except socket.error:
+                pass
         print('Invalid input.')
     while True:
-        port = input("Select listening port: ")
+        port = input('Select listening port: ')
         try:
             if int(port) < 0 or int(port) > 65535:
                 raise ValueError

@@ -19,9 +19,10 @@ EXEC_PATH_LINUX = "/usr/bin/shellver"
 
 
 def metadata():
-	print("Shellver <0.1> by {}".format(__author__))
-	print("Reverse Shell Cheat Sheet to do")
-	print("Other cyber-warrior.org")
+        print("Shellver <0.1> by {}".format(__author__))
+        print("Reverse Shell Cheat Sheet to do")
+        print("Other cyber-warrior.org")
+
 
 def dependencies(option):
     """install script dependencies with pip"""
@@ -33,11 +34,9 @@ def dependencies(option):
         print("requirements.txt not found, please redownload or do pull request again")
         exit(1)
 
-    
-
 
 def install(file_path, exec_path):
-    """full installation of shellver to the system"""
+    """full installation of shellver on the system"""
 
     os.mkdir(file_path)
     copy2("shellver.py", file_path)
@@ -73,61 +72,57 @@ def uninstall(file_path, exec_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--install", help="install shellver in the system",  action='store_true')
-    parser.add_argument("-r", "--reinstall", help="remove old files and reinstall to the system", action="store_true")
-    parser.add_argument("-u", "--uninstall", help="uninstall shellver from the system", action="store_true")
+    parser.add_argument("-i", "--install", help="Install shellver on the system",  action='store_true')
+    parser.add_argument("-r", "--reinstall", help="Remove old files and reinstall on the system", action="store_true")
+    parser.add_argument("-u", "--uninstall", help="Uninstall shellver from the system", action="store_true")
     args = parser.parse_args()
 
     if platform == "linux" or platform == "linux2":
         # Linux require root
         if os.getuid() != 0:
-            print("linux system requires root access for the installation")
+            print("Linux systems require root access for the installation")
             exit(1)
 
         FILE_PATH = FILE_PATH_LINUX
         EXEC_PATH = EXEC_PATH_LINUX
-
-    
-
     else:
-        print("Windows platform is not supported for installation")
+        print("Windows platforms are not supported for installation")
         exit(1)
 
     if args.install and not (args.reinstall or args.uninstall):
         #full installation to the system
 
         if os.path.exists(FILE_PATH):
-            print("shellver is already installed under " + FILE_PATH)
+            print("Shellver is already installed under " + FILE_PATH)
             exit(1)
 
         if os.path.isfile(EXEC_PATH):
-            print("executable file exists under " + EXEC_PATH)
+            print("Executable file exists under " + EXEC_PATH)
             exit(1)
 
         install(FILE_PATH, EXEC_PATH)
         print("Installation finished")
         print("Files are installed under " + FILE_PATH)
-	sleep(2)
-        os.system('shellver how')
+        sleep(2)
+        os.system('shellver -h')
 
     elif args.uninstall and not (args.install or args.reinstall):
         # uninstall from the system
 
         uninstall(FILE_PATH, EXEC_PATH)
-        
         print("Uninstallation finished")
 
     elif args.reinstall and not (args.install or args.uninstall):
         # reinstall to the system
 
         uninstall(FILE_PATH, EXEC_PATH)
-        print("Removed previous installed files")
+        print("Removed previous installation")
 
         install(FILE_PATH, EXEC_PATH)
         print("Reinstallation finished")
         print("Files are installed under " + FILE_PATH)
-	sleep(2)
-        os.system('shellver how')
+        sleep(2)
+        os.system('shellver -h')
 
     else:
         metadata(); print("")
