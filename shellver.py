@@ -9,6 +9,7 @@ from subprocess import Popen
 import netifaces
 
 color = ['\033[95m', '\033[96m', '\033[36m', '\033[94m', '\033[92m', '\033[93m', '\033[91m']
+reset_color = '\033[0m'
 
 
 def signal_handler(sig, frame):
@@ -170,6 +171,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
     print(f'{choice(color)}         |--Shell Spawning--|\n')
     print('For Linux shells use https://github.com/jonasw234/upgrade-tty to upgrade your TTY!\n')
+    print(reset_color)
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append('sudo')
@@ -281,6 +283,7 @@ run -j""")
         sys.exit(1)
 
     print(f'{choice(color)}         |--Shell Spawning--|\n')
+    print(reset_color)
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append('sudo ')
