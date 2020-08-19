@@ -54,6 +54,11 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
 From https://github.com/swisskyrepo
 
+When you know that you’re spawning a reverse shell from a Windows system, I suggest invoking shellver with [rlwrap](https://linux.die.net/man/1/rlwrap) for readline mappings, i.e.
+```
+rlwrap ./shellver.py shell
+```
+
 # Reverse Shell Methods
 ```
 ╔BASH TCP═══════════════════════════════════════════
