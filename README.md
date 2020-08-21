@@ -43,7 +43,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
 <img src="https://github.com/jonasw234/shellver/blob/master/ss/py2.png" >
 
-(like it says you should use my [upgrade-tty](https://github.com/jonasw234/upgrade-tty) to upgrade your TTY for Linux systems!) 
+(like it says you should use my [upgrade-tty](https://github.com/jonasw234/upgrade-tty) to upgrade your TTY for Linux systems if you’re not using [pwncat](https://github.com/calebstewart/pwncat)!) 
 
 `shellver msf`
 
@@ -166,10 +166,13 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-☒ Make it possible to use non-default network interfaces when you have more than one  
-☒ Make it possible to use a completely different IP address if you create the payload on your machine but want to run the listener on a different (Internet exposed) server  
-☒ Sanity check for user inputs and ask for corrections  
-☒ `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet
+- [ ] Bind to specified interface only (or to all if no LAN IP address was used)  
+- [ ] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  
+- [ ] If using [rlwrap](https://linux.die.net/man/1/rlwrap) only show Windows (or universal) reverse shells  
+- [x] Make it possible to use non-default network interfaces when you have more than one  
+- [x] Make it possible to use a completely different IP address if you create the payload on your machine but want to run the listener on a different (Internet exposed) server  
+- [x] Sanity check for user inputs and ask for corrections  
+- [x] `msfvenom` payloads where no compatible `msfpc` payload exists (e.g. shellcode) don’t automatically spawn a shell yet
 
 # Thanks to
 * [The original shellver](https://github.com/0xR0/shellver)
