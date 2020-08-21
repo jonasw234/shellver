@@ -20,7 +20,7 @@ For reinstall
 
 `python setup.py -r`
  
-Run `shellver -h` or `shellver msf` or `shellver shell`
+Run `shellver -h` for help, `shellver shell` for reverse shells handled by a nc listener (universal), `shellver pwncat` for reverse shells handled by a [pwncat](https://github.com/calebstewart/pwncat) listener (Linux only) or `shellver msf` for msfvenom payloads
 
 Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 
@@ -34,6 +34,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 - Remove `requests` dependency
 - Automatically use `sudo` if needed
 - Probably a bunch more stuff I’m currently forgetting
+- Included support for [pwncat](https://github.com/calebstewart/pwncat)
 
 # Example
 `shellver shell`
@@ -176,3 +177,4 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 * [Pentest Monkey - Cheat Sheet Reverse shell](http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
 * [Spawning a TTY Shell](http://netsec.ws/?p=337)
 * [Obtaining a fully interactive shell](https://forum.hackthebox.eu/discussion/142/obtaining-a-fully-interactive-shell)
+* [pwncat](https://github.com/calebstewart/pwncat)
