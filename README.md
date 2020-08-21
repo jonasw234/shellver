@@ -168,7 +168,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 # TODO
 - [ ] Bind to specified interface only (or to all if no LAN IP address was used)  
 - [ ] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  
-- [ ] If using [rlwrap](https://linux.die.net/man/1/rlwrap) only show Windows (or universal) reverse shells  
+- [x] If using [rlwrap](https://linux.die.net/man/1/rlwrap) only show Windows (or universal) reverse shells  
 - [x] Make it possible to use non-default network interfaces when you have more than one  
 - [x] Make it possible to use a completely different IP address if you create the payload on your machine but want to run the listener on a different (Internet exposed) server  
 - [x] Sanity check for user inputs and ask for corrections  
