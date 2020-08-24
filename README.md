@@ -33,8 +33,11 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 - No longer use Google DNS to find out LAN IP
 - Remove `requests` dependency
 - Automatically use `sudo` if needed
-- Probably a bunch more stuff I’m currently forgetting
 - Included support for [pwncat](https://github.com/calebstewart/pwncat)
+- Try to bind only to the interface that was selected at the start
+- Show only Windows reverse shells if invoked with [rlwrap](https://linux.die.net/man/1/rlwrap), only Linux reverse shells if [pwncat](https://github.com/calebstewart/pwncat) is selected as listener
+- Some more listeners and msfvenom payloads
+- Probably a bunch more stuff I’m currently forgetting
 
 # Example
 `shellver shell`
@@ -166,7 +169,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-- [ ] Bind to specified interface only (or to all if no LAN IP address was used)  
+- [x] Bind to specified interface only (or to all if no LAN IP address was used)  
 - [x] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  
 - [x] If using [rlwrap](https://linux.die.net/man/1/rlwrap) only show Windows (or universal) reverse shells  
 - [x] Make it possible to use non-default network interfaces when you have more than one  

