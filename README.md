@@ -14,15 +14,21 @@ Then go inside:
 
 Then install it:
 
-`python setup.py -i`
+`pip install --user -r requirements.txt`
  
-For reinstall
+if you want to use [pwncat](https://github.com/calebstewart/pwncat), you’ll also need to run
 
-`python setup.py -r`
- 
-Run `shellver -h` for help, `shellver shell` for reverse shells handled by a nc listener (universal), `shellver pwncat` for reverse shells handled by a [pwncat](https://github.com/calebstewart/pwncat) listener (Linux only) or `shellver msf` for msfvenom payloads
+`pip install --user -r pwncat-requirements.txt`
 
-Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
+and if you want to assist development, running
+
+`pip install --user -r dev-requirements.txt`
+
+will install the packages I use for formatting, linting and debugging.
+
+Run `shellver -h` for help, `shellver shell` for reverse shells handled by a nc listener (universal), `shellver pwncat` for reverse shells handled by a [pwncat](https://github.com/calebstewart/pwncat) listener (Linux only) or `shellver msf` for msfvenom payloads.
+
+Needs [msfpc](https://github.com/g0tmi1k/msfpc) for (most) msfvenom payloads.
 
 # Changes from the original
 - Upgraded to Python 3
@@ -37,6 +43,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for msfvenom payloads.
 - Try to bind only to the interface that was selected at the start
 - Show only Windows reverse shells if invoked with [rlwrap](https://linux.die.net/man/1/rlwrap), only Linux reverse shells if [pwncat](https://github.com/calebstewart/pwncat) is selected as listener
 - Some more listeners and msfvenom payloads
+- Split requirements files into different categories
 - Probably a bunch more stuff I’m currently forgetting
 
 # Example
