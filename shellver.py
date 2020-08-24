@@ -1,4 +1,25 @@
 #!/usr/bin/env python3
+"""
+                                    ╔═╗┬ ┬┌─┐╦  ╦ ╦  ╦┌─┐┬─┐
+                                    ╚═╗├─┤├┤ ║  ║ ╚╗╔╝├┤ ├┬┘
+                                    ╚═╝┴ ┴└─┘╩═╝╩═╝╚╝ └─┘┴└─
+                                            .:: 0xR ::.
+                            .:: Reverse Shell Cheat Sheet Tool ::.
+                                    .:: cyber-warrior.org ::.
+                         .:: Heavily modified by Jonas A. Wendorf ::.
+
+Shellver is a Reverse Shell Cheat Sheet Tool.
+
+It tries to streamline some of the tedious parts of getting shells when you already have RCE, by giving you a list of payloads, automatically spawning a listener, giving sensible defaults etc.
+
+Usage: shellver.py [-h] (msf|shell|pwncat)
+
+Options:
+    -h      Show this help text
+    msf     Create msfvenom payloads, generate msconsole config files, and start a listener
+    shell   Show a generic list of reverse shell commands and start a netcat listener
+    pwncat  Show Linux reverse shell commands and start a pwncat listener
+"""
 import argparse
 import ipaddress
 import os
@@ -12,6 +33,7 @@ from subprocess import PIPE, Popen
 from urllib import request
 
 import netifaces
+from docopt import docopt
 
 color = [
     "\033[95m",
@@ -501,11 +523,9 @@ def banner():
 
 
 def main(arg):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("use", help="msf|shell|pwncat")
-    args = parser.parse_args()
+    args = docopt(__doc__)
     banner()
-    if args.use == "shell":
+    if args["shell"]:
         # Try to find correct command line arguments for nc version
         help_output, help_error = Popen(
             ["nc", "-h"], stdout=PIPE, stderr=PIPE
@@ -516,12 +536,10 @@ def main(arg):
         else:
             command = "nc -s xxx -lvnp yyy"
         shell(command)
-    elif args.use == "pwncat":
+    elif args["pwncat"]:
         shell("pwncat --listen --host xxx --port yyy")
-    elif args.use == "msf":
+    elif args["msf"]:
         payload()
-    elif args.use != "shell" and args.use != "msf":
-        print(f"{choice(color)}Use `{__file__} -h` for options.")
 
 
 if __name__ == "__main__":
