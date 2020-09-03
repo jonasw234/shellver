@@ -176,7 +176,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-- [ ] Make it possible to pass custom listeners  
+- [x] Make it possible to pass custom listeners  
 - [x] Bind to specified interface only (or to all if no LAN IP address was used)  
 - [x] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  
 - [x] If using [rlwrap](https://linux.die.net/man/1/rlwrap) only show Windows (or universal) reverse shells  

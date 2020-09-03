@@ -12,13 +12,14 @@ Shellver is a Reverse Shell Cheat Sheet Tool.
 
 It tries to streamline some of the tedious parts of getting shells when you already have RCE, by giving you a list of payloads, automatically spawning a listener, giving sensible defaults etc.
 
-Usage: shellver.py [-h] msf|shell|pwncat
+Usage: shellver.py [-h] msf|shell|pwncat|<command>
 
 Options:
     -h --help  Show this help text
     msf        Create msfvenom payloads, generate msconsole config files, and start a listener
     shell      Show a generic list of reverse shell commands and start a netcat listener
     pwncat     Show Linux reverse shell commands and start a pwncat listener
+    command    Custom listener command to run.  Use “xxx” as placeholder for IP address and “yyy” as placeholder for port
 """
 import argparse
 import ipaddress
@@ -163,7 +164,9 @@ def shell(listener: str):
 
     # Warn and react to rlwrap and pwncat combination
     if rlwrap and pwncat:
-        print("pwncat should do what rlwrap does (and more!) for Linux machines.  Are you sure, you want to use both? Re-enabling Linux-only reverse shells.")
+        print(
+            "pwncat should do what rlwrap does (and more!) for Linux machines.  Are you sure, you want to use both? Re-enabling Linux-only reverse shells."
+        )
         rlwrap = False
 
     # Keeping with the random colors, but adding color coding for different OS
@@ -609,6 +612,8 @@ def main():
         shell(command)
     elif args["pwncat"]:
         shell("pwncat --listen --host xxx --port yyy")
+    elif args["<command>"]:
+        shell(args["<command>"])
     elif args["msf"]:
         payload()
 
