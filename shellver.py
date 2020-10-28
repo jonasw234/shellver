@@ -641,7 +641,7 @@ def main():
             command = "nc -s xxx -lvnp yyy"
         shell(command)
     elif args["pwncat"]:
-        shell("pwncat --listen --host xxx --port yyy")
+        shell("pwncat --listen --port yyy xxx")
     elif args["<command>"]:
         shell(args["<command>"])
     elif args["msf"]:
