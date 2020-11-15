@@ -28,12 +28,9 @@ will install the packages I use for formatting, linting and debugging.
 
 Run `shellver -h` for help, `shellver shell` for reverse shells handled by a nc listener (universal), `shellver pwncat` for reverse shells handled by a [pwncat](https://github.com/calebstewart/pwncat) listener (Linux only) or `shellver msf` for msfvenom payloads.
 
-Needs [msfpc](https://github.com/g0tmi1k/msfpc) for (most) msfvenom payloads.
-
 # Changes from the original
 - Upgraded to Python 3
 - Automatically spawn listener for msfvenom payloads
-- Use [msfpc](https://github.com/g0tmi1k/msfpc) instead of msfvenom for easier reuse (if functionality exists, otherwise recreates its behavior)
 - Color coding for each different OS shell
 - Reordered payloads a bit (at the beginning are only Linux payloads)
 - No longer use Google DNS to find out LAN IP
@@ -42,7 +39,7 @@ Needs [msfpc](https://github.com/g0tmi1k/msfpc) for (most) msfvenom payloads.
 - Included support for [pwncat](https://github.com/calebstewart/pwncat)
 - Try to bind only to the interface that was selected at the start
 - Show only Windows reverse shells if invoked with [rlwrap](https://linux.die.net/man/1/rlwrap), only Linux reverse shells if [pwncat](https://github.com/calebstewart/pwncat) is selected as listener
-- Some more listeners and msfvenom payloads
+- Some more listeners and `msfvenom` payloads
 - Split requirements files into different categories
 - Probably a bunch more stuff I’m currently forgetting
 
@@ -185,7 +182,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 ```
 
 # TODO
-- [ ] Remove `msfpc` dependency (doesn’t support every payload I wanted, so I had to implement my own routines anyway)
+- [x] Remove `msfpc` dependency (doesn’t support every payload I wanted, so I had to implement my own routines anyway)
 - [x] Make it possible to pass custom listeners  
 - [x] Bind to specified interface only (or to all if no LAN IP address was used)  
 - [x] If using [pwncat](https://github.com/calebstewart/pwncat) only show Linux (or universal) reverse shells  
@@ -197,6 +194,7 @@ Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new
 
 # Thanks to
 * [The original shellver](https://github.com/0xR0/shellver)
+* [msfpc](https://github.com/g0tmi1k/msfpc)
 * [Reverse Bash Shell One Liner](https://security.stackexchange.com/questions/166643/reverse-bash-shell-one-liner)
 * [Pentest Monkey - Cheat Sheet Reverse shell](http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
 * [Spawning a TTY Shell](http://netsec.ws/?p=337)

