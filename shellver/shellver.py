@@ -606,7 +606,7 @@ run -j"""
     print(reset_color, end="")
     command = []
     if os.geteuid() != 0 and int(port) < 1024:
-        command.append("sudo ")
+        command.append("sudo")
     command.extend(spawn_shell)
     Popen(command).communicate()
 
