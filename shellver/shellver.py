@@ -81,7 +81,7 @@ def ask_listener() -> (str, int, bool):
     for interface in interfaces:
         ip_addrs.extend(
             [
-                ip_addr["addr"]
+                (interface, ip_addr["addr"])
                 for ip_addr in netifaces.ifaddresses(interface).get(
                     netifaces.AF_INET, []
                 )
@@ -97,7 +97,7 @@ def ask_listener() -> (str, int, bool):
         print("Please try again later or input manually!")
     print(f"{choice(color)}")
     for idx, ip_addr in enumerate(ip_addrs, 1):
-        print(f"For LAN enter {idx}: {ip_addr}")
+        print(f"For LAN enter {idx}: {ip_addr[1]} ({ip_addr[0]})")
     if wan:
         print(f"For WAN enter {idx + 1}: {wan}")
     print("Enter a custom IP address if none of the above are correct for you.")
@@ -105,7 +105,7 @@ def ask_listener() -> (str, int, bool):
         try:
             cw = input("Which one do you want?: ")
             if int(cw) >= 1 and int(cw) <= idx:
-                ipp = ip_addrs[int(cw) - 1]
+                ipp = ip_addrs[int(cw) - 1][1]
                 interface_used = True
                 break
             elif int(cw) == idx + 1 and wan:
