@@ -647,4 +647,7 @@ def main():
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
-    main()
+    try:
+        main()
+    except EOFError:
+        signal_handler(0, None)
